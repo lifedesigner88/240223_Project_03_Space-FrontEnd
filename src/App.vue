@@ -1,11 +1,14 @@
 <script>
 import postDatas from "./assets/data/postdata";
+import LoginCompo from "@/components/LoginCompo.vue";
 
 export default {
   name: 'App',
+  components: {LoginCompo},
   data() {
     return {
       postDatas,
+      LoginOpened: true,
     }
   }
 }
@@ -14,6 +17,11 @@ export default {
 
 
 <template>
+
+  <LoginCompo
+      v-if="LoginOpened"
+      @CloseLogin="LoginOpened = false"
+  />
 
   <header>1</header>
   <div class="left__menu"></div>
@@ -88,11 +96,11 @@ footer {
   &:hover {bottom: 0;}
 
   h1 {
-    background-color: rgba(255,255,255,0.7);
+    background:linear-gradient(180deg,rgba(255,255,255,0.1), rgba(239, 239, 239, 0.8),rgba(255,255,255,0.1) ) ;
     text-align: center;
     font-size: 20px;
     font-style: normal;
-    padding: 1vh;
+    padding: 1.2vh;
     transition: 1s ease 0s;
     &:hover {opacity: 0}
   }
