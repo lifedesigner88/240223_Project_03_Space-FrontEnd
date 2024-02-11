@@ -32,7 +32,13 @@ export default {
   height: 300px;
   border-radius: 20px;
   position: relative;
-
+  transition: all 1s ease 0s;
+  cursor: pointer;
+  &:hover {
+    transform:translateY(-10px) scale(102%);
+    opacity: 0.7;
+    box-shadow: black 5px 5px 20px;
+  }
   img {
     object-fit: cover;
     width: 100%;

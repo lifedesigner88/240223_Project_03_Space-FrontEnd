@@ -12,7 +12,7 @@ export default {
         <h1>encore SPACE</h1>
         <input type="email" placeholder="이메일" >
         <input type="password" placeholder="비밀번호">
-        <input type="submit" value="로그인"><br>
+        <input @click="$emit('LogineSucceed')" type="submit" value="로그인"><br>
         <div class="btn-box">
           <button class="btn-github">Login with GitHub</button>
           <button class="btn-google">Login with Google</button>
@@ -57,6 +57,7 @@ export default {
     padding: 18px;
     box-sizing: border-box;
     border-radius: 5px;
+    cursor: pointer;
     border: none;
   }
 }
