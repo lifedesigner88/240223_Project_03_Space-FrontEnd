@@ -20,7 +20,7 @@ export default {
 
 .postbox {
   grid-area: c;
-  padding-top: 4vh;;
+  padding-top: 5vh;;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -47,7 +47,7 @@ export default {
     bottom: 0;
     background: linear-gradient(90deg, rgba(1, 1, 1, 0.5), rgba(1, 1, 1, 0));
     font-size: 20px;
-    padding: 25px;
+    padding: 21px 25px 25px 25px;
     text-align: left;
     overflow:hidden;
     text-overflow:ellipsis;

@@ -1,4 +1,5 @@
 #app {
+    font-family: 'Noto Sans KR', sans-serif;
     width: 100vw;
     display: grid;
     grid-template:
@@ -6,3 +7,6 @@
              2fr 10fr 2fr;
 }
 
+
+
+/*<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;600&display=swap"*/
