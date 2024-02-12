@@ -24,16 +24,18 @@ footer {
     }
 
     .footer__imgs {
+        width: 100vw;
         display: flex;
         justify-content: center;
         gap: 1vw;
 
         a {
-            width: 30%;
-
+            width: 30vw;
+            display: flex;
+            justify-content: center;
             img {
                 width: 100%;
-                max-width: 400px;
+                max-width: 30vw;
                 opacity: 0.3;
                 transition: 0.5s ease 0s;
 

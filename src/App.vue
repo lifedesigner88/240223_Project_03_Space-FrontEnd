@@ -89,6 +89,20 @@ export default {
   <div
       class="left__menu"
       v-if="menuOpend">
+
+    <div class="left__menu__empty"></div>
+    <div class="left__menu__navibtn">
+      <div class="navibtn__myspace"><i></i><span>My SPACE</span></div>
+      <div class="navibtn__teamspace"><i></i><span>Team SPACE</span></div>
+      <div class="navibtn__groupspace"><i></i><span>Group SPACE</span></div>
+      <div class="navibtn__kanban"><i></i><span>Kanban</span></div>
+      <div class="navibtn__Calendar"><i></i><span>Calendar</span></div>
+      <div class="navibtn__Messages"><i></i><span>Messages</span></div>
+    </div>
+    <div class="left__menu__profile">3</div>
+    <div class="left__menu__copyright">4</div>
+
+
   </div>
 
   <router-view

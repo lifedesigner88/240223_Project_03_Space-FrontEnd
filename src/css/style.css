@@ -9,7 +9,12 @@
              "b   c   d" 1fr /
              2fr 10fr 2fr;
 }
-
+i {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size : contain;
+    cursor: pointer;
+}
 
 
 

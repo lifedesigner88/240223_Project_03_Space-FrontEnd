@@ -2,6 +2,11 @@
 export default {
   name: "LoginCompo",
 
+  methods:{
+    login(){
+      this.$emit('LogineSucceed')
+    }
+  }
 }
 </script>
 
@@ -12,10 +17,12 @@ export default {
         <h1>encore SPACE</h1>
         <input type="email" placeholder="이메일" >
         <input type="password" placeholder="비밀번호">
-        <input @click.prevent="$emit('LogineSucceed')" type="submit" value="로그인"><br>
+        <input @click.prevent="login" type="submit" value="로그인"><br>
         <div class="btn-box">
-          <button class="btn-github" @click.prevent>Login with GitHub</button>
-          <button class="btn-google" @click.prevent>Login with Google</button>
+          <button class="btn-github"
+                  @click.prevent="login">Login with GitHub</button>
+          <button class="btn-google"
+                  @click.prevent="login">Login with Google</button>
           <button @click.prevent="$emit('CloseLogin')" class="btn-nologin">비회원 접속</button>
         </div>
       </form>
@@ -40,7 +47,8 @@ export default {
 .login-box__form {
   background-color: var(--modal-window-bg);
   width: 33vw;
-  max-width: 450px;
+  min-width: 400px;
+  max-width: 550px;
   padding: 60px 60px;
   border-radius: 20px;
 }

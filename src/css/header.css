@@ -7,23 +7,16 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    i {
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size : contain;
-        cursor: pointer;
-    }
+
 
     .header__left {
         flex: 1 1 50%;
-
         h1 {
             padding: 10px;
             margin: 0 0 0 40px;
             font-size: 2.8vh;
         }
     }
-
     .header__right {
         background-color: var(--background);
         height: 7vh;
@@ -60,7 +53,7 @@ header {
                 }
             }
             .search__svg {
-                background-image: url("../assets/icon/munubar/magnifying-glass.svg");
+                background-image: url("../assets/icon/menubar/magnifying-glass.svg");
                 width: 2vh;
                 height: 2vh;
             }
@@ -99,19 +92,19 @@ header {
             }
 
             .header__right__icons__bell{
-                background-image: url("../assets/icon/munubar/notification-bell.svg");
+                background-image: url("../assets/icon/menubar/notification-bell.svg");
                 div{
                     background-color: var(--notification-default);
                 }
             }
             .header__right__icons__email{
-                background-image: url("../assets/icon/munubar/email.svg");
+                background-image: url("../assets/icon/menubar/email.svg");
                 div{
                     background-color: var(--notification-success);
                 }
             }
             .header__right__icons__calendar{
-                background-image: url("../assets/icon/munubar/calendar-silhouette.svg");
+                background-image: url("../assets/icon/menubar/calendar-silhouette.svg");
                 div{
                     background-color: var(--notification-warning);
                 }
