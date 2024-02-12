@@ -10,7 +10,7 @@ export default {
     return {
       postDatas,
       pageText: 'encore SPACE',
-      LoginOpened: false,
+      LoginOpened: true,
       menuOpend: false,
       footerOpend: true,
       postDetailOpend: false,
