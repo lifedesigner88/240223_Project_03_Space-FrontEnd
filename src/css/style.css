@@ -1,11 +1,15 @@
-#app {
+* {
+    box-sizing: border-box;
     font-family: 'Noto Sans KR', sans-serif;
+}
+#app {
     width: 100vw;
     display: grid;
     grid-template:
              "b   c   d" 1fr /
              2fr 10fr 2fr;
 }
+
 
 
 

@@ -1,27 +1,39 @@
 <script>
 import postDatas from "./assets/data/postdata";
 import LoginCompo from "@/components/LoginCompo.vue";
+import PostDetail from "@/components/PostDetail.vue";
 
 export default {
   name: 'App',
-  components: {LoginCompo},
+  components: {PostDetail, LoginCompo},
   data() {
     return {
       postDatas,
-      LoginOpened: true,
+      pageText: 'encore SPACE',
+      LoginOpened: false,
       menuOpend: false,
       footerOpend: true,
+      postDetailOpend: false,
+      clickedPost: Object,
+      like:0,
+      dislike:0,
     }
   },
 
-  methods:{
+  methods: {
     logined() {
       this.LoginOpened = false;
       this.menuOpend = true;
       this.footerOpend = false;
     },
-    noLogin(){
+    noLogin() {
       this.LoginOpened = false;
+    },
+
+    logout(){
+      this.LoginOpened = true;
+      this.menuOpend = false;
+      this.footerOpend = true;
     }
   }
 }
@@ -36,8 +48,43 @@ export default {
       @CloseLogin="noLogin"
       @LogineSucceed="logined"
   />
+  <PostDetail
+      v-if="postDetailOpend"
+      :post = clickedPost
+      :like = like
+      :dislike= dislike
+      @PostDetailClose = "postDetailOpend=false"
+      @like = "like++"
+      @dislike = "dislike++"
+  />
 
-  <header>1</header>
+
+  <header>
+    <div class="header__left">
+      <h1>{{ pageText }}</h1>
+    </div>
+
+    <div class="header__right">
+      <form class="header__right__searchbox" action="">
+        <input type="text" placeholder="Search here">
+        <i class="search__svg"></i>
+      </form>
+      <div class="header__right__icons">
+        <i class="header__right__icons__bell">
+          <div>4</div>
+        </i>
+        <i class="header__right__icons__email">
+          <div>2</div>
+        </i>
+        <i class="header__right__icons__calendar">
+          <div>3</div>
+        </i>
+      </div>
+      <div class="header__right__logout" @click="logout">
+        Logout
+      </div>
+    </div>
+  </header>
 
   <div
       class="left__menu"
@@ -46,6 +93,7 @@ export default {
 
   <router-view
       :postDatas="postDatas"
+      @PostDtailOpen="postDetailOpend = true; clickedPost=$event"
   />
   <div
       class="right--menu"
@@ -74,84 +122,8 @@ export default {
 
 
 <style>
-
-header {
-  background-color: blue;
-  position: fixed;
-  width: 100%;
-  height: 4.5vh;
-  z-index: 1;
-}
-
-.left__menu {
-  width: 50%;
-  min-width: 50px;
-  background-color: red;
-  transition: width 1s ease 0s;
-  grid-area: b;
-
-  &:hover {
-    width: 100%;
-  }
-}
-
-.right--menu {
-  width: 50%;
-  transition: width 1s ease 0s;
-  background-color: green;
-  justify-self: right;
-  grid-area: d;
-
-  &:hover {
-    width: 100%;
-  }
-}
-
-footer {
-  background-color: rgba(255, 255, 255, 0.1);
-  position: fixed;
-  width: 100%;
-  height: 35vh;
-  bottom: -29vh;
-  transition: bottom 1s ease 0s;
-
-  &:hover {
-    bottom: 0;
-  }
-
-  h1 {
-    background: white;
-    text-align: center;
-    font-size: 20px;
-    font-style: normal;
-    padding: 1.2vh;
-    transition: 1s ease 0s;
-
-    &:hover {
-      opacity: 0
-    }
-  }
-
-  .footer__imgs {
-    display: flex;
-    justify-content: center;
-    gap: 1vw;
-
-    a {
-      width: 30%;
-
-      img {
-        width: 100%;
-        max-width: 400px;
-        opacity: 0.3;
-        transition: 0.5s ease 0s;
-
-        &:hover {
-          opacity: 1
-        }
-      }
-    }
-  }
-}
+@import "css/header.css";
+@import "css/menu.css";
+@import "css/footer.css";
 
 </style>

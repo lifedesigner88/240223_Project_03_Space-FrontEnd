@@ -12,11 +12,11 @@ export default {
         <h1>encore SPACE</h1>
         <input type="email" placeholder="이메일" >
         <input type="password" placeholder="비밀번호">
-        <input @click="$emit('LogineSucceed')" type="submit" value="로그인"><br>
+        <input @click.prevent="$emit('LogineSucceed')" type="submit" value="로그인"><br>
         <div class="btn-box">
-          <button class="btn-github">Login with GitHub</button>
-          <button class="btn-google">Login with Google</button>
-          <button @click="$emit('CloseLogin')" class="btn-nologin">비회원 접속</button>
+          <button class="btn-github" @click.prevent>Login with GitHub</button>
+          <button class="btn-google" @click.prevent>Login with Google</button>
+          <button @click.prevent="$emit('CloseLogin')" class="btn-nologin">비회원 접속</button>
         </div>
       </form>
     </div>
@@ -38,7 +38,7 @@ export default {
 }
 
 .login-box__form {
-  background-color: rgba(129, 193, 231, 0.9);
+  background-color: var(--modal-window-bg);
   width: 33vw;
   max-width: 450px;
   padding: 60px 60px;

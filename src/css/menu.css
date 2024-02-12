@@ -1,0 +1,23 @@
+.left__menu {
+    width: 50%;
+    min-width: 50px;
+    background-color: red;
+    transition: width 1s ease 0s;
+    grid-area: b;
+
+    &:hover {
+        width: 100%;
+    }
+}
+
+.right--menu {
+    width: 50%;
+    transition: width 1s ease 0s;
+    background-color: green;
+    justify-self: right;
+    grid-area: d;
+
+    &:hover {
+        width: 100%;
+    }
+}

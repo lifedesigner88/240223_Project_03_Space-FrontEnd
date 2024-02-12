@@ -9,7 +9,9 @@ export default {
 
 <template>
   <div class="postbox">
-    <div class="postcard" v-for="(data, i) in postDatas" :key="i">
+    <div class="postcard"
+         v-for="(data, i) in postDatas" :key="i"
+         @click="$emit('PostDtailOpen',data)">
       <div class="postcard__title">{{ data.title }}</div>
       <img :src="data.image" alt=""/>
     </div>
@@ -20,7 +22,7 @@ export default {
 
 .postbox {
   grid-area: c;
-  padding-top: 5vh;;
+  padding-top: 7.5vh;;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
