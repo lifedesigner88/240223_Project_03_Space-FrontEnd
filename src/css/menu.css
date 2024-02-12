@@ -1,12 +1,9 @@
 .left__menu {
     /*width: 50%;*/
-    z-index: -1;
     width: 100%;
     height: 100vh;
     min-width: 50px;
-    background-color: var(--background);
     transition: width 1s ease 0s;
-    grid-area: b;
     position: fixed;
     display: grid;
     grid-template-columns:2fr 10fr 2fr;
@@ -17,7 +14,6 @@
     }
 
     .left__menu__empty {
-        /*background-color: #0d61ce;*/
         grid-column: 1/2;
     }
 
@@ -37,6 +33,8 @@
             padding: 18px 19px 22px 19px;
             border-radius: 1vw;
             width: 12vw;
+            /*작동안함*/
+            cursor: pointer;
 
             i {
                margin: 0.01vw 1vw 0 0.5vw;
