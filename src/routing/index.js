@@ -1,12 +1,16 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import PostList from "@/components/PostList.vue";
-import MySpace from "@/components/space/MySpace.vue";
-import TeamSpace from "@/components/space/TeamSpace.vue";
-import GroupSpace from "@/components/space/GroupSpace.vue";
-import KanbanPage from "@/components/page/KanbanPage.vue";
-import CalendarPage from "@/components/page/CalendarPage.vue";
-import MessagesPage from "@/components/page/MessagesPage.vue";
+import PostList from "@/pages/post/PostList.vue";
+import MySpace from "@/pages/space/MySpace.vue";
+import TeamSpace from "@/pages/space/TeamSpace.vue";
+import GroupSpace from "@/pages/space/GroupSpace.vue";
+import KanbanPage from "@/pages/schedule/KanbanPage.vue";
+import CalendarPage from "@/pages/schedule/CalendarPage.vue";
+import MessagesPage from "@/pages/chat/MessagesPage.vue";
 
+// Vue Router의 주요 설정 파일로, 라우트 정의 및 라우터 인스턴스를 생성하는 파일
+
+
+// routes 애플리케이션의 라우트 정의를 담당, 경로에 대한 컴포넌트와 연결되는 경로와 컴포넌트 매핑
 const routes = [
     {
         path: '/',               // url 경로 지정
@@ -54,9 +58,9 @@ const routes = [
 
 ];
 
-const vueRouter = createRouter({
+const mainRouter = createRouter({
     history: createWebHistory(),
     routes: routes,
 });
 
-export default vueRouter;
+export default mainRouter;

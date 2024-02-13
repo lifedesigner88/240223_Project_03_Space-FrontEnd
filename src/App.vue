@@ -1,7 +1,7 @@
 <script>
 import postDatas from "./assets/data/postdata";
-import LoginCompo from "@/components/LoginCompo.vue";
-import PostDetail from "@/components/PostDetail.vue";
+import LoginCompo from "@/pages/main/LoginPage.vue";
+import PostDetail from "@/pages/post/PostDetail.vue";
 
 export default {
   name: 'App',
@@ -163,8 +163,8 @@ $router.push('/message')">
 
 
 <style>
-@import "css/header.css";
-@import "css/menu.css";
-@import "css/footer.css";
+@import "styles/css/header.css";
+@import "styles/css/menu.css";
+@import "styles/css/footer.css";
 
 </style>
