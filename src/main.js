@@ -1,10 +1,8 @@
 import {createApp} from 'vue'
 import App from './App.vue'
-import './css/normalize.css'
-import './css/color.css';
-import './css/style.css'
 
-import VueRouter from './router/VueRouter'
+
+import VueRouter from '@/routing/index'
 
 createApp(App)
     .use(VueRouter)

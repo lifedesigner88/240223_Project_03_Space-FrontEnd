@@ -39,5 +39,5 @@ export default {
 </template>
 
 <style scoped>
-@import "../css/post-list.css";
+@import "../../styles/css/post-list.css";
 </style>
