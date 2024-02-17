@@ -1,16 +1,13 @@
 <template>
   <div>
-
+    HomePage
   </div>
 </template>
 
 <script>
+import { useQuasar } from 'quasar'
 export default {
-  setup() {
 
-
-    return {}
-  }
 }
 </script>
 
