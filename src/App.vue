@@ -1,30 +1,33 @@
 <template>
-  <q-layout>
-    <!-- 헤더 -->
-    <AppHeader></AppHeader>
+  <q-layout view="lHh Lpr lFf">
+<!--    <q-pull-to-refresh @refresh="refresh">-->
+      <q-scroll-area style="height: 100vh; max-width: 100vw;">
+      <!-- 헤더 -->
+      <AppHeader></AppHeader>
 
-    <!-- 사이드바 (옵션) -->
-    <q-drawer>
-      사이드바 내용
-    </q-drawer>
-
-    <!-- 페이지 컨텐츠 -->
-    <q-page-container>
-       페이지 내용
-    </q-page-container>
+      <!-- 페이지 컨텐츠 -->
+      <q-page-container>
+         <router-view/>
+      </q-page-container>
+      </q-scroll-area>
+<!--    </q-pull-to-refresh>-->
   </q-layout>
 </template>
 
 <script>
 import AppHeader from "components/layout/AppHeader.vue";
+import {refresh} from "ionicons/icons";
 
 export default {
   components: {AppHeader},
-  setup () {
+  setup() {
     return {
-
+      // refresh () {
+      //   location.reload();
+      // }
     }
   }
 }
+
 </script>
 

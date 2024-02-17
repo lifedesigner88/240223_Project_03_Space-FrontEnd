@@ -47,7 +47,7 @@ See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-webpack/quas
 project/
 │
 ├── src/
-│   ├── assets/                     # 정적 파일들 (이미지, 아이콘 등)
+│   ├── assets/                     # 정적 파일들
 │   ├── components/                 # 재사용 가능한 Vue 컴포넌트
 │   │   ├── common/                 # 공통 컴포넌트
 │   │   ├── layout/                 # 레이아웃 관련 컴포넌트
@@ -68,7 +68,7 @@ project/
 │   ├── utils/                      # 유틸리티 함수 및 도구
 │   └── App.vue                     # 루트 컴포넌트
 │
-├── public/                         # 정적 파일 (index.html 등)
+├── public/                         # 정적 파일 (이미지, 아이콘 등)
 │
 ├── tests/                          # 테스트 파일들
 │
