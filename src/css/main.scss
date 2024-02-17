@@ -5,3 +5,8 @@ body{
   font-family: 'Anta', sans-serif;
   overflow: hidden;
 }
+.top-navbar {
+  background-color: rgba(0, 0, 0, 0.5); /* RGBA 색상을 사용하여 투명한 헤더 배경 설정 */
+  color: white; /* 텍스트 색상 */
+  padding: 20px;
+}

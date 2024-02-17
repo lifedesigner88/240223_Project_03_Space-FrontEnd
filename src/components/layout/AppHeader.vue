@@ -1,22 +1,22 @@
 <template>
-  <q-header class="top-navbar bg-white row justify-between q-ma-auto">
-    <div class="text-black q-mx-lg q-my-auto">
-      <q-btn class=" home text-center" size="2em" flat label="encore SPACE"></q-btn>
+  <q-header class="top-navbar row justify-between q-ma-auto">
+    <div class="text-white q-mx-lg q-my-auto">
+      <q-btn class="home text-center"  size="2em" flat label="encore SPACE"></q-btn>
     </div>
-    <div class="text-grey-8 row q-mx-lg q-my-auto">
+    <div class="text-grey-8 row q-mx-lg q-my-auto text-white">
 
-      <q-input class="search q-my-auto q-mx-lg-xl" dense rounded standout placeholder="Search..."   model-value="" >
+      <q-input class="search q-my-auto q-mx-lg-xl text-white" standout="bg-orange text-white" dense  rounded  placeholder="Search..."   model-value="" >
         <template v-slot:append>
-          <q-icon  name="search" />
+          <q-icon class="text-white" color="text-white" name="search" />
         </template>
       </q-input>
-      <q-icon class="q-mx-lg" size="3em" name="notifications"></q-icon>
+      <q-icon class="q-mx-lg text-white" size="3em" name="notifications"></q-icon>
 
-      <q-icon class="q-mx-auto" size="3em" name="mail"></q-icon>
+      <q-icon class="q-mx-auto text-white" size="3em" name="mail"></q-icon>
 
-      <q-icon class="q-mx-lg" size="2.7em" name="fas fa-calendar"></q-icon>
+      <q-icon class="q-mx-lg text-white" size="2.7em" name="fas fa-calendar"></q-icon>
 
-      <q-btn flat rounded class="bg-grey-3 text-black" label="Login">
+      <q-btn flat rounded class="bg-white text-black" label="Login">
         <q-menu class="q-my-lg-lg">
           <q-list >
             <q-item >
@@ -32,7 +32,7 @@
             </q-item>
             <q-item >
               <q-item-section>
-                <q-btn class="bg-indigo text-white" flat>Login</q-btn>
+                <q-btn class="bg-orange text-white" flat>Login</q-btn>
               </q-item-section>
             </q-item>
             <q-item >

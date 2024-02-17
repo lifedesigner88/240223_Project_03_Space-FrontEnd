@@ -1,7 +1,7 @@
 <template>
   <q-page class="home-page">
 
-    <q-card-section class="text-center">
+    <q-card-section class="text-center text-white">
       <h2>Welcome to Encore Space</h2>
     </q-card-section>
 
