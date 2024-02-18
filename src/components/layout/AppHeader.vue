@@ -1,7 +1,7 @@
 <template>
   <q-header class="top-navbar row justify-between q-ma-auto">
     <div class="text-white q-mx-lg q-my-auto">
-      <q-btn class="home text-center"  size="2em" flat label="encore SPACE" @click="this.$router.push('/')"></q-btn>
+      <q-btn class="home text-center text-orange"  size="2em"  flat label="encore SPACE" @click="this.$router.push('/')"></q-btn>
     </div>
     <div class="text-grey-8 row q-mx-lg q-my-auto text-white">
 
@@ -16,13 +16,13 @@
 
       <q-icon class="q-mx-lg text-white" size="2.7em" name="fas fa-calendar"></q-icon>
 
-      <q-btn flat rounded class="bg-white text-black" label="Login">
+      <q-btn flat rounded class="bg-white text-black " label="Login">
         <q-menu class="q-my-lg-lg">
           <LoginPage></LoginPage>
         </q-menu>
       </q-btn>
 
-      <q-btn flat rounded class="bg-white text-black" label="Menu">
+      <q-btn flat rounded class="bg-white text-black " label="Menu">
         <q-menu>
 
           <q-list >
@@ -74,5 +74,3 @@ export default {
   }
 }
 </script>
-
-

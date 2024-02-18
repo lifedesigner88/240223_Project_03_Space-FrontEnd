@@ -2,7 +2,8 @@
   <q-page class="home-page">
 
     <q-card-section class="text-center text-white">
-      <h2 style="color: orange">Welcome to Encore Space</h2>
+      <h3>Welcome to </h3>
+      <h1 class="text-orange">Encore Space</h1>
     </q-card-section>
 
     <q-card-section class="text-center q-ma-lg-lg" >

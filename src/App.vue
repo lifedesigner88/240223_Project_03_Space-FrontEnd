@@ -33,7 +33,7 @@ export default {
       thumbStyle: {
         right: '4px',
         borderRadius: '5px',
-        backgroundColor: '#f37221',
+        backgroundColor: '#ff9800',
         width: '5px',
         opacity: 0.75
       },
@@ -43,9 +43,4 @@ export default {
 
 </script>
 
-<style>
 
-::-webkit-scrollbar-track {
-  background-color: white; /* 스크롤바 색상 */
-}
-</style>
