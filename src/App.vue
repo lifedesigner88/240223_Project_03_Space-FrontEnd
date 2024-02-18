@@ -1,17 +1,21 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="background-image" >
-<!--    <q-pull-to-refresh @refresh="refresh">-->
-      <q-scroll-area style="height: 100vh; max-width: 100vw;">
-        <!-- 헤더 -->
-        <AppHeader></AppHeader>
 
-        <!-- 페이지 컨텐츠 -->
-        <q-page-container>
-           <router-view/>
-        </q-page-container>
+    <!-- 헤더 -->
+    <AppHeader></AppHeader>
+    <!--    <q-pull-to-refresh @refresh="refresh">-->
+    <q-scroll-area
+      :thumb-style="thumbStyle"
+      style="height: 100vh; max-width: 100vw;">
 
-      </q-scroll-area>
-<!--    </q-pull-to-refresh>-->
+      <!-- 페이지 컨텐츠 -->
+      <q-page-container>
+         <router-view/>
+      </q-page-container>
+
+
+    <!--    </q-pull-to-refresh>-->
+    </q-scroll-area>
   </q-layout>
 </template>
 
@@ -26,21 +30,22 @@ export default {
       // refresh () {
       //   location.reload();
       // }
+      thumbStyle: {
+        right: '4px',
+        borderRadius: '5px',
+        backgroundColor: '#f37221',
+        width: '5px',
+        opacity: 0.75
+      },
     }
   }
 }
 
 </script>
+
 <style>
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('src/assets/home/main.png');
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
+
+::-webkit-scrollbar-track {
+  background-color: white; /* 스크롤바 색상 */
 }
 </style>

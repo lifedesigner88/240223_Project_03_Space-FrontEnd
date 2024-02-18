@@ -1,11 +1,11 @@
 <template>
   <q-header class="top-navbar row justify-between q-ma-auto">
     <div class="text-white q-mx-lg q-my-auto">
-      <q-btn class="home text-center"  size="2em" flat label="encore SPACE"></q-btn>
+      <q-btn class="home text-center"  size="2em" flat label="encore SPACE" @click="this.$router.push('/')"></q-btn>
     </div>
     <div class="text-grey-8 row q-mx-lg q-my-auto text-white">
 
-      <q-input class="search q-my-auto q-mx-lg-xl text-white" standout="bg-orange text-white" dense  rounded  placeholder="Search..."   model-value="" >
+      <q-input class="search q-my-auto q-mx-lg-xl text-white " standout="bg-orange text-white" dense  rounded  placeholder="Search..."   model-value="" >
         <template v-slot:append>
           <q-icon class="text-white" color="text-white" name="search" />
         </template>
@@ -18,49 +18,17 @@
 
       <q-btn flat rounded class="bg-white text-black" label="Login">
         <q-menu class="q-my-lg-lg">
-          <q-list >
-            <q-item >
-              <q-item-section>
-
-                <q-input class="search " dense rounded standout placeholder="Email..."   model-value="" />
-              </q-item-section>
-            </q-item>
-            <q-item >
-              <q-item-section>
-                <q-input class="search " dense rounded standout placeholder="Password"   model-value="" />
-              </q-item-section>
-            </q-item>
-            <q-item >
-              <q-item-section>
-                <q-btn class="bg-orange text-white" flat>Login</q-btn>
-              </q-item-section>
-            </q-item>
-            <q-item >
-              <q-item-section>
-                <q-btn class="bg-red-7 text-white" flat> <q-icon class="q-mr-sm" size="1em" name="fa-brands fa-google"/> Google Login </q-btn>
-              </q-item-section>
-            </q-item>
-            <q-item >
-              <q-item-section>
-                <q-btn class="bg-black text-white" flat><q-icon class="q-mr-sm" size="1em" name="fa-brands fa-github"/> Github Login  </q-btn>
-              </q-item-section>
-            </q-item>
-            <q-item >
-              <q-item-section>
-                <q-btn class="bg-grey-7 text-white" flat>Email Register</q-btn>
-              </q-item-section>
-            </q-item>
-          </q-list>
+          <LoginPage></LoginPage>
         </q-menu>
       </q-btn>
 
-      <q-btn flat rounded class="bg-grey-3 text-black" label="Menu">
+      <q-btn flat rounded class="bg-white text-black" label="Menu">
         <q-menu>
-          <q-list >
-            <q-item clickable>
-              <q-item-section>My Page</q-item-section>
-            </q-item>
 
+          <q-list >
+            <q-item clickable @click="this.$router.push('/MyPage')">
+              <q-item-section >My Page</q-item-section>
+            </q-item>
             <q-item clickable>
               <q-item-section>My SPACE</q-item-section>
             </q-item>
@@ -79,16 +47,11 @@
             <q-item clickable>
               <q-item-section>MessagesPage</q-item-section>
             </q-item>
-
-            <q-item clickable>
-              <q-item-section>Settings</q-item-section>
-            </q-item>
-
             <q-item clickable>
               <q-item-section>Log Out</q-item-section>
             </q-item>
-
           </q-list>
+
         </q-menu>
       </q-btn>
     </div>
@@ -98,10 +61,12 @@
 <script>
 // 애플리케이션의 상단에 표시되는 헤더 컴포넌트로, 로고나 네비게이션 메뉴와 같은 요소
 import {ref} from "vue";
+import LoginPage from "pages/main/LoginPage.vue";
 
 export default {
   name: 'AppHeader'
   ,
+  components: {LoginPage},
   setup () {
     return {
       showing: ref(false)

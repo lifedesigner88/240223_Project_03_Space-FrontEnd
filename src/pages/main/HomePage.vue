@@ -2,10 +2,10 @@
   <q-page class="home-page">
 
     <q-card-section class="text-center text-white">
-      <h2>Welcome to Encore Space</h2>
+      <h2 style="color: orange">Welcome to Encore Space</h2>
     </q-card-section>
 
-    <q-card-section class="text-center q-ma-lg-lg">
+    <q-card-section class="text-center q-ma-lg-lg" >
         <q-carousel
           animated
           v-model="slide"

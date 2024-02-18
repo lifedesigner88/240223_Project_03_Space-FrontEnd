@@ -6,7 +6,20 @@ body{
   overflow: hidden;
 }
 .top-navbar {
-  background-color: rgba(0, 0, 0, 0.5); /* RGBA 색상을 사용하여 투명한 헤더 배경 설정 */
-  color: white; /* 텍스트 색상 */
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
   padding: 20px;
 }
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('src/assets/home/main.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+
