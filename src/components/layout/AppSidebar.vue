@@ -12,36 +12,42 @@
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
+               @click="this.$router.push('/MySpace')"
         > My SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
+               @click="this.$router.push('/TeamSpace')"
         > Team SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
+               @click="this.$router.push('/GroupSpace')"
         > Group SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
+               @click="this.$router.push('/Kanban')"
         > Kanban</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
+               @click="this.$router.push('/Calendar')"
         > Calendar</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
+               @click="this.$router.push('/Messages')"
         > Messages</q-btn>
       </p>
 

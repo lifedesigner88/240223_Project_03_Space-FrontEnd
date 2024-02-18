@@ -17,13 +17,13 @@ const routes = [
   }
   ,
   {
-    path: '/GroupSpace',
-    component: () => import('pages/space/GroupSpace.vue')
+    path: '/TeamSpace',
+    component: () => import('pages/space/TeamSpace.vue')
   }
   ,
   {
-    path: '/TeamSpace',
-    component: () => import('pages/space/TeamSpace.vue')
+    path: '/GroupSpace',
+    component: () => import('pages/space/GroupSpace.vue')
   }
   ,
   {
