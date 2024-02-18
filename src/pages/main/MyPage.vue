@@ -1,10 +1,20 @@
 <template>
   <q-page class="my-page row container">
     <!-- 사이드 바 -->
-    <AppSidebar ></AppSidebar>
+    <AppSidebar class="fixed-sidebar"></AppSidebar>
 
     <q-item-section>
     <div class="text-white text-center">
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
+      <h1>my-page</h1>
       <h1>my-page</h1>
     </div>
     </q-item-section>

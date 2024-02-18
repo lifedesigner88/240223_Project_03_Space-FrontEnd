@@ -1,6 +1,6 @@
 <template>
   <q-item-section class="col-2" >
-    <div class="text-white text-center " style=" position: fixed; top: 33%;  left: 3.3%;">
+    <div class="text-white text-center " style=" position: fixed; top: 33%;  left: 5%;">
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
