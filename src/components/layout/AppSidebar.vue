@@ -1,7 +1,58 @@
 <template>
-  <div>
+  <q-item-section class="col-2" >
+    <div class="text-white text-center " style=" position: fixed; top: 33%;  left: 5%;">
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/MyPage')"
+        > My Page</q-btn>
+      </p>
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/MySpace')"
+        > My SPACE</q-btn>
+      </p>
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/TeamSpace')"
+        > Team SPACE</q-btn>
+      </p>
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/GroupSpace')"
+        > Group SPACE</q-btn>
+      </p>
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/Kanban')"
+        > Kanban</q-btn>
+      </p>
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/Calendar')"
+        > Calendar</q-btn>
+      </p>
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/Messages')"
+        > Messages</q-btn>
+      </p>
 
-  </div>
+    </div>
+  </q-item-section>
 </template>
 
 <script>
@@ -12,9 +63,22 @@ export default {
 
     return {}
   }
+  ,
+  methods: {
+    handleHover(event) {
+      // 호버 시 버튼 스타일 변경
+      event.target.classList.add("hovered");
+    },
+    handleLeave(event) {
+      // 호버 해제 시 버튼 스타일 초기화
+      event.target.classList.remove("hovered");
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-
+  .hovered {
+    color: orange /* 호버 시 텍스트 색상 변경 */
+  }
 </style>
