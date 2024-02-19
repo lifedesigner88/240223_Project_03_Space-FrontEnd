@@ -40,6 +40,11 @@ const routes = [
     path: '/Messages',
     component: () => import('pages/chat/MessagesPage.vue')
   }
+  ,
+  {
+    path: '/Register',
+    component: () => import('pages/main/RegisterPage.vue')
+  }
 ]
 
 export default routes

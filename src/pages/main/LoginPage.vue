@@ -27,7 +27,7 @@
     </q-item>
     <q-item >
       <q-item-section>
-        <q-btn class="bg-grey-7 text-white" flat>Email Register</q-btn>
+        <q-btn class="bg-grey-7 text-white" flat @click="this.$router.push('/Register')">Email Register</q-btn>
       </q-item-section>
     </q-item>
   </q-list>
