@@ -61,36 +61,16 @@
           </div>
         </div>
       </q-card-section>
-
-
   </q-page>
 </template>
 
 <script>
-import axios from 'axios';
-import { useQuasar } from 'quasar';
+
+import {triggerNegative} from 'src/state/modules/notificationModule';
+import {RegisterApi} from "src/services/authService";
+import {isValidEmail, isValidPassword} from "src/services/utilityService";
+
 export default {
-  setup() {
-    const $q = useQuasar();
-    function triggerOngoing () {
-      $q.notify({
-        type: 'positive',
-        message: '회원가입 했습니다. 로그인해주세요.',
-        timeout: 1000
-      });
-    }
-    function triggerNegative(message) {
-      $q.notify({
-        type: 'warning',
-        position: 'top',
-        message: message
-      });
-    }
-    return{
-      triggerNegative,
-      triggerOngoing
-    }
-  },
   data() {
     return {
       name: '',
@@ -103,7 +83,7 @@ export default {
   },
   methods: {
     validateEmail() {
-      if (!this.isValidEmail(this.email)) {
+      if (!isValidEmail(this.email)) {
         this.errorMessage = '유효한 이메일 주소를 입력해주세요.';
       } else {
         this.errorMessage = '';
@@ -124,7 +104,7 @@ export default {
       }
     },
     validatePassword() {
-      if (!this.isValidPassword(this.password)) {
+      if (!isValidPassword(this.password)) {
         this.errorMessage = '비밀번호는 최소 8자 이상, 15자 이하의 숫자를 입력하세요. 알파벳 대소문자(a~z, A~Z), 숫자(0~9)가 혼합되어야 합니다.';
       } else {
         this.errorMessage = '';
@@ -137,39 +117,31 @@ export default {
         this.errorMessage = '';
       }
     },
-    isValidPassword(password) {
-      return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/.test(password);
-    },
-    isValidEmail(email) {
-      return /.+@.+\..+/.test(email);
-    }
-    ,
     register() {
-
       if (!this.name || !this.email || !this.password || !this.nickname) {
         this.errorMessage = '모든 필드를 입력해주세요.';
-        this.triggerNegative(this.errorMessage);
+        triggerNegative(this.errorMessage, this.$q);
         return;
       }
 
       // 이메일 형식이 올바르지 않을 경우
-      if (!this.isValidEmail(this.email)) {
+      if (!isValidEmail(this.email)) {
         this.errorMessage = '유효한 이메일 주소를 입력해주세요.';
-        this.triggerNegative(this.errorMessage);
+        triggerNegative(this.errorMessage, this.$q);
         return;
       }
 
       // 비밀번호가 유효하지 않을 경우
-      if (!this.isValidPassword(this.password)) {
+      if (!isValidPassword(this.password)) {
         this.errorMessage = '비밀번호는 최소 8자 이상, 15자 이하의 숫자를 입력하세요. 알파벳 대소문자(a~z, A~Z), 숫자(0~9)가 혼합되어야 합니다.';
-        this.triggerNegative(this.errorMessage);
+        triggerNegative(this.errorMessage, this.$q);
         return;
       }
 
       // 비밀번호와 비밀번호 확인이 일치하지 않을 경우
       if (this.password !== this.passwordCheck) {
         this.errorMessage = '비밀번호와 비밀번호 확인이 일치하지 않습니다.';
-        this.triggerNegative(this.errorMessage);
+        triggerNegative(this.errorMessage, this.$q);
         return;
       }
 
@@ -183,14 +155,7 @@ export default {
         loginType: "EMAIL"
       };
 
-      axios.post('http://localhost:8080/api/member/create', formData)
-      .then(response => {
-        this.triggerOngoing();
-        this.$router.push('/');
-      })
-      .catch(error => {
-        this.triggerNegative(error.response.data.message);
-      });
+      RegisterApi(formData,this.$q,this.$router);
     },
   }
   ,

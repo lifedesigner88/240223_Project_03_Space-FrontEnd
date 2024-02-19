@@ -45,6 +45,9 @@ const routes = [
     path: '/Register',
     component: () => import('pages/main/RegisterPage.vue')
   }
+  ,
+  {path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
+  }
 ]
 
 export default routes
