@@ -1,7 +1,8 @@
 // 사용자 인증 및 권한 부여와 관련된 작업을 처리하는 파일로, 사용자 로그인, 로그아웃, 회원가입 등의 작업을 수행하고 사용자의 인증 상태를 관리
 import axios from 'axios';
-
 import { triggerOngoing, triggerNegative } from 'src/utils/notification';
+import {axiosInstance} from "boot/axios";
+
 export const FountURL = 'http://localhost:8081';
 export const BackURL = 'http://localhost:8080';
 
@@ -61,18 +62,30 @@ export function checkCode(formData, $q) {
   });
 }
 
-export function Logout(router){
-  localStorage.removeItem("accessToken");
-  location.reload();
-  // return new Promise((resolve, reject) => {
-  //   axios.post(BackURL+'/api/member/logout')
-  //     .then(response => {
-  //       triggerOngoing(response.data.message, $q);
-  //       resolve(true); // 성공 시 true 반환
-  //     })
-  //     .catch(error => {
-  //       triggerNegative(error.response.data.message, $q);
-  //       resolve(false); // 실패 시 false 반환
-  //     });
-  // });
+export function Logout(){
+  return new Promise((resolve, reject) => {
+    axiosInstance.get(BackURL+'/api/member/logout')
+      .then(response => {
+        // triggerOngoing(response.data.message, $q);
+        console.log(response);
+        localStorage.removeItem("accessToken");
+        resolve(true); // 성공 시 true 반환
+      })
+      .catch(error => {
+        console.log(error);
+        localStorage.removeItem("accessToken");
+        // triggerNegative(error.response.data.message, $q);
+        resolve(false); // 실패 시 false 반환
+      });
+  });
+}
+
+export function test(){
+  return new Promise((resolve, reject) => {
+  axiosInstance.post(BackURL+'/api/member/qwe',{id:123})
+    .then(response => {
+    })
+    .catch(error => {
+    });
+  });
 }

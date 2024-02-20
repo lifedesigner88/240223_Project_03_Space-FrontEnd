@@ -46,7 +46,8 @@ const routes = [
     component: () => import('pages/main/RegisterPage.vue')
   }
   ,
-  {path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
+  {
+    path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
   }
 ]
 
