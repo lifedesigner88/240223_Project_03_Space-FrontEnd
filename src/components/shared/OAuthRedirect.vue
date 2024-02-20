@@ -27,7 +27,6 @@ export default {
     if(accessToken != null){
       localStorage.setItem("accessToken",accessToken)
       document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-      triggerOngoing('자동 로그인 되었습니다.', this.$q);
     }
     location.href=FountURL;
   }

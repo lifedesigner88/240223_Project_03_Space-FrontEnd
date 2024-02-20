@@ -23,7 +23,7 @@
       </q-btn>
 
 
-      <q-btn v-if="isLoggedIn" flat rounded class="bg-white text-black " label="Menu" >
+      <q-btn v-if="this.isLoggedIn" flat rounded class="bg-white text-black " label="Menu" >
         <q-menu>
 
           <q-list >
@@ -51,6 +51,9 @@
             <q-item clickable @click="handleLogout">
               <q-item-section>Log Out</q-item-section>
             </q-item>
+            <q-item clickable @click="test">
+              <q-item-section>test</q-item-section>
+            </q-item>
           </q-list>
 
         </q-menu>
@@ -64,21 +67,21 @@
 // 애플리케이션의 상단에 표시되는 헤더 컴포넌트로, 로고나 네비게이션 메뉴와 같은 요소
 import {ref} from "vue";
 import LoginPage from "pages/main/LoginPage.vue";
-import {Logout} from "src/services/authService";
+import {Logout, test} from "src/services/authService";
 
 
 export default {
   name: 'AppHeader'
   ,
   components: {LoginPage},
+
   data() {
     return{
-
+      isLoggedIn:false
     }
   },
   setup () {
     return {
-      isLoggedIn: false,
       showing: ref(false),
     }
   },
@@ -88,8 +91,14 @@ export default {
     }
   },
   methods: {
+
     handleLogout(){
-      Logout(this.$router);
+      Logout(this.$q)
+
+    }
+    ,
+    test(){
+      test();
     }
   }
 }
