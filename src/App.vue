@@ -12,8 +12,6 @@
       <q-page-container>
          <router-view/>
       </q-page-container>
-
-
     <!--    </q-pull-to-refresh>-->
     </q-scroll-area>
   </q-layout>
