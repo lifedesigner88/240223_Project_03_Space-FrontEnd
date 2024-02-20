@@ -1,6 +1,8 @@
 // 사용자 인증 및 권한 부여와 관련된 작업을 처리하는 파일로, 사용자 로그인, 로그아웃, 회원가입 등의 작업을 수행하고 사용자의 인증 상태를 관리
 import axios from 'axios';
-import { triggerOngoing, triggerNegative } from 'src/state/modules/notificationModule';
+import {useAuthStore} from "stores/login";
+
+import { triggerOngoing, triggerNegative } from 'src/utils/notification';
 const FountURL = 'http://localhost:8081';
 const BackURL = 'http://localhost:8080';
 
@@ -22,15 +24,17 @@ export function googleApi(){
   location.href=BackURL+'/oauth2/authorization/google';
 }
 
-export function emailLogin(formData, $q, router){
+export function emailLogin(formData, $q, router, authStore){
   axios.post(BackURL+'/api/member/login', formData)
     .then(response => {
       triggerOngoing('로그인되었습니다.', $q);
       localStorage.setItem('accessToken',response.data.result)
+      useAuthStore().login()
       router.push('/');
     })
     .catch(error => {
-      triggerNegative(error.response.data.message, $q);
+      console.log(error);
+      triggerNegative(error.response, $q);
     });
 }
 

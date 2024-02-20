@@ -77,7 +77,7 @@
 
 <script>
 
-import {triggerNegative} from 'src/state/modules/notificationModule';
+import {triggerNegative} from 'src/utils/notification';
 import {checkEmail, checkCode, RegisterApi} from "src/services/authService";
 import {isValidEmail, isValidPassword} from "src/services/utilityService";
 

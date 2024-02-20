@@ -12,7 +12,7 @@
     </q-item>
     <q-item >
       <q-item-section>
-        <q-btn class="bg-orange text-white" @click=handleEmailLogin() flat>Login</q-btn>
+        <q-btn class="bg-orange text-white" @click=handleEmailLogin flat>Login</q-btn>
       </q-item-section>
     </q-item>
     <q-item >
@@ -35,6 +35,7 @@
 
 <script>
 import {githubApi, googleApi, emailLogin} from "src/services/authService";
+
 export default {
   data() {
     return {
@@ -53,7 +54,8 @@ export default {
       };
       emailLogin(data, this.$q, this.$router)
     }
-  }
+  },
+
 }
 </script>
 

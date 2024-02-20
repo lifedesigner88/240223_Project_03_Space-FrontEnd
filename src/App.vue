@@ -21,12 +21,21 @@
 
 <script>
 import AppHeader from "components/layout/AppHeader.vue";
-import {refresh} from "ionicons/icons";
+import { createPinia } from 'pinia'
+import {createApp} from "vue";
+import App from "app/.quasar/app";
+
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
 
 export default {
   components: {AppHeader},
   setup() {
+    app.use(pinia)
     return {
+
       // refresh () {
       //   location.reload();
       // }

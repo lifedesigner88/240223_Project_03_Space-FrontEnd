@@ -16,13 +16,14 @@
 
       <q-icon class="q-mx-lg text-white" size="2.7em" name="fas fa-calendar"></q-icon>
 
-      <q-btn flat rounded class="bg-white text-black " label="Login">
+      <q-btn v-if="!isLoggedIn" flat rounded class="bg-white text-black " label="Login" >
         <q-menu class="q-my-lg-lg">
           <LoginPage></LoginPage>
         </q-menu>
       </q-btn>
 
-      <q-btn flat rounded class="bg-white text-black " label="Menu">
+
+      <q-btn v-if="isLoggedIn" flat rounded class="bg-white text-black " label="Menu" >
         <q-menu>
 
           <q-list >
@@ -47,30 +48,43 @@
             <q-item clickable @click="this.$router.push('/Messages')">
               <q-item-section>MessagesPage</q-item-section>
             </q-item>
-            <q-item clickable>
+            <q-item clickable @click="handleLogout">
               <q-item-section>Log Out</q-item-section>
             </q-item>
           </q-list>
 
         </q-menu>
       </q-btn>
+
     </div>
   </q-header>
 </template>
 
 <script>
 // 애플리케이션의 상단에 표시되는 헤더 컴포넌트로, 로고나 네비게이션 메뉴와 같은 요소
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import LoginPage from "pages/main/LoginPage.vue";
+import {useAuthStore} from "stores/login";
+
 
 export default {
   name: 'AppHeader'
   ,
   components: {LoginPage},
   setup () {
+    const authStore = useAuthStore();
+    const isLoggedIn = computed(() => authStore.getLoggedIn);
     return {
-      showing: ref(false)
+      showing: ref(false),
+      isLoggedIn
     }
+  },
+  methods: {
+
+    handleLogout(){
+
+    }
+
   }
 }
 </script>
