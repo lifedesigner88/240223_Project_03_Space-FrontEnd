@@ -22,10 +22,11 @@ export function googleApi(){
   location.href=BackURL+'/oauth2/authorization/google';
 }
 
-export function emailLogin(){
+export function emailLogin(formData, $q, router){
   axios.post(BackURL+'/api/member/login', formData)
     .then(response => {
-      triggerOngoing('회원가입 했습니다. 로그인해주세요.', $q);
+      triggerOngoing('로그인되었습니다.', $q);
+      localStorage.setItem('accessToken',response.data.result)
       router.push('/');
     })
     .catch(error => {
@@ -36,11 +37,9 @@ export function emailLogin(){
 export function checkEmail(formData, $q)   {
   axios.post(BackURL+'/api/member/emailAuthentication', formData)
     .then(response => {
-      console.log(response)
       triggerOngoing('해당 메일로 인증번호를 발송했습니다.', $q);
     })
     .catch(error => {
-      console.log(error)
       triggerNegative(error.response.data.message, $q);
     });
 }
@@ -49,12 +48,10 @@ export function checkCode(formData, $q) {
   return new Promise((resolve, reject) => {
     axios.post(BackURL+'/api/member/emailCheck', formData)
       .then(response => {
-        console.log(response);
         triggerOngoing(response.data.message, $q);
         resolve(true); // 성공 시 true 반환
       })
       .catch(error => {
-        console.log(error);
         triggerNegative(error.response.data.message, $q);
         resolve(false); // 실패 시 false 반환
       });

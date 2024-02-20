@@ -47,7 +47,11 @@ export default {
     googleApi,
     githubApi,
     handleEmailLogin() {
-      emailLogin(this.email, this.password)
+      const data = {
+        email: this.email,
+        password: this.password,
+      };
+      emailLogin(data, this.$q, this.$router)
     }
   }
 }
