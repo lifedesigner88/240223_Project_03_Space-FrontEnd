@@ -16,7 +16,7 @@
 
       <q-icon class="q-mx-lg text-white" size="2.7em" name="fas fa-calendar"></q-icon>
 
-      <q-btn v-if="!isLoggedIn" flat rounded class="bg-white text-black " label="Login" >
+      <q-btn v-if="!this.isLoggedIn" flat rounded class="bg-white text-black " label="Login" >
         <q-menu class="q-my-lg-lg">
           <LoginPage></LoginPage>
         </q-menu>
@@ -62,29 +62,35 @@
 
 <script>
 // 애플리케이션의 상단에 표시되는 헤더 컴포넌트로, 로고나 네비게이션 메뉴와 같은 요소
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import LoginPage from "pages/main/LoginPage.vue";
-import {useAuthStore} from "stores/login";
+import {Logout} from "src/services/authService";
 
 
 export default {
   name: 'AppHeader'
   ,
   components: {LoginPage},
+  data() {
+    return{
+
+    }
+  },
   setup () {
-    const authStore = useAuthStore();
-    const isLoggedIn = computed(() => authStore.getLoggedIn);
     return {
+      isLoggedIn: false,
       showing: ref(false),
-      isLoggedIn
+    }
+  },
+  created() {
+    if(localStorage.getItem("accessToken")){
+      this.isLoggedIn = true
     }
   },
   methods: {
-
     handleLogout(){
-
+      Logout(this.$router);
     }
-
   }
 }
 </script>
