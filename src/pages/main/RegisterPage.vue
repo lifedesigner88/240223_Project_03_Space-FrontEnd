@@ -6,7 +6,7 @@
 
         <div class="text-center" >
           <h5 class="text-orange">Email Register</h5>
-          <div>
+          <div class="row">
           <q-input
             dark
             v-model="email"
@@ -14,9 +14,20 @@
             type="email"
             label="이메일"
             label-color="orange"
-            class="q-mb-sm"
+            class="q-mb-sm col-10"
             @keyup="validateEmail"
           />
+            <q-btn dense class=" bg-white col-2 q-mb-sm" style="opacity: 0.8;" @click="emailChecks" >Code Send</q-btn>
+          </div>
+          <div class="row">
+          <q-input
+            dark
+            v-model="code"
+            label="이메일 인증번호"
+            label-color="orange"
+            class="q-mb-sm col-10"
+          />
+            <q-btn dense class=" bg-white col-2 q-mb-sm" style="opacity: 0.8;" @click="codeCheck" >Code Check</q-btn>
           </div>
           <q-input
             dark
@@ -67,21 +78,52 @@
 <script>
 
 import {triggerNegative} from 'src/state/modules/notificationModule';
-import {RegisterApi} from "src/services/authService";
+import {checkEmail, checkCode, RegisterApi} from "src/services/authService";
 import {isValidEmail, isValidPassword} from "src/services/utilityService";
 
 export default {
   data() {
     return {
       name: '',
+      code: '',
       email: '',
       password: '',
       passwordCheck: '',
       nickname: '',
       errorMessage: '',
+      emailCheck: false,
+      emailBackUp : '',
     }
   },
   methods: {
+    codeCheck(){
+      const data = {
+        "email" : this.email,
+        "code" : this.code
+      }
+      checkCode(data, this.$q)
+        .then(success => {
+          if (success) {
+            this.emailCheck = true;
+            this.emailBackUp = this.email;
+          }
+        })
+        .catch(error => {
+        });
+      this.emailBackUp = this.email;
+    },
+    emailChecks(){
+      if (!isValidEmail(this.email)) {
+        this.errorMessage = '유효한 이메일 주소를 입력해주세요.';
+        triggerNegative(this.errorMessage, this.$q);
+        return;
+      }
+      const data = {
+        "email" : this.email
+      }
+      checkEmail(data, this.$q);
+    }
+    ,
     validateEmail() {
       if (!isValidEmail(this.email)) {
         this.errorMessage = '유효한 이메일 주소를 입력해주세요.';
@@ -141,6 +183,19 @@ export default {
       // 비밀번호와 비밀번호 확인이 일치하지 않을 경우
       if (this.password !== this.passwordCheck) {
         this.errorMessage = '비밀번호와 비밀번호 확인이 일치하지 않습니다.';
+        triggerNegative(this.errorMessage, this.$q);
+        return;
+      }
+
+      if(!this.emailCheck){
+        this.errorMessage = '이메일 인증을 해주세요.';
+        triggerNegative(this.errorMessage, this.$q);
+        return;
+      }
+      console.log(this.emailBackUp)
+      console.log(this.email)
+      if(! (this.emailBackUp === this.email)){
+        this.errorMessage = '만약 이메일을 수정하셨으면 다시 이메일 인증을 해주셔야합니다.';
         triggerNegative(this.errorMessage, this.$q);
         return;
       }

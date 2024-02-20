@@ -12,17 +12,17 @@
     </q-item>
     <q-item >
       <q-item-section>
-        <q-btn class="bg-orange text-white" @click=login flat>Login</q-btn>
+        <q-btn class="bg-orange text-white" @click=handleEmailLogin() flat>Login</q-btn>
       </q-item-section>
     </q-item>
     <q-item >
       <q-item-section>
-        <q-btn class="bg-red-7 text-white" flat @click="googleApi()"> <q-icon class="q-mr-sm" size="1em" name="fa-brands fa-google"/> Google Login </q-btn>
+        <q-btn class="bg-red-7 text-white" flat @click="googleApi"> <q-icon class="q-mr-sm" size="1em" name="fa-brands fa-google"/> Google Login </q-btn>
       </q-item-section>
     </q-item>
     <q-item >
       <q-item-section>
-        <q-btn class="bg-black text-white" flat  @click="githubApi()"><q-icon class="q-mr-sm" size="1em" name="fa-brands fa-github"/> Github Login  </q-btn>
+        <q-btn class="bg-black text-white" flat  @click="githubApi"><q-icon class="q-mr-sm" size="1em" name="fa-brands fa-github"/> Github Login  </q-btn>
       </q-item-section>
     </q-item>
     <q-item >
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {githubApi, googleApi} from "src/services/authService";
+import {githubApi, googleApi, emailLogin} from "src/services/authService";
 export default {
   data() {
     return {
@@ -45,8 +45,10 @@ export default {
   ,
   methods:{
     googleApi,
-    githubApi
-
+    githubApi,
+    handleEmailLogin() {
+      emailLogin(this.email, this.password)
+    }
   }
 }
 </script>
