@@ -27,13 +27,10 @@ export function googleApi(){
 export function emailLogin(formData, $q, router){
   axios.post(BackURL+'/api/member/login', formData)
     .then(response => {
-      triggerOngoing('로그인되었습니다.', $q);
       localStorage.setItem('accessToken',response.data.result)
       location.reload();
-      router.push('/');
     })
     .catch(error => {
-      console.log(error);
       triggerNegative(error.response.data.message, $q);
     });
 }
@@ -62,21 +59,18 @@ export function checkCode(formData, $q) {
   });
 }
 
-export function Logout(){
-  return new Promise((resolve, reject) => {
-    axiosInstance.get(BackURL+'/api/member/logout')
-      .then(response => {
-        // triggerOngoing(response.data.message, $q);
-        console.log(response);
-        localStorage.removeItem("accessToken");
-        resolve(true); // 성공 시 true 반환
-      })
-      .catch(error => {
-        console.log(error);
-        localStorage.removeItem("accessToken");
-        // triggerNegative(error.response.data.message, $q);
-        resolve(false); // 실패 시 false 반환
-      });
+export function Logout($q){
+  axiosInstance.get(BackURL+'/api/member/logout')
+  .then(response => {
+    console.log(response);
+    localStorage.removeItem("accessToken");
+    location.href=FountURL;
+    resolve(true); // 성공 시 true 반환
+  })
+  .catch(error => {
+    console.log(error);
+    localStorage.removeItem("accessToken");
+    location.href=FountURL;
   });
 }
 

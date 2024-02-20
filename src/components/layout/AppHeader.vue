@@ -93,10 +93,8 @@ export default {
   methods: {
 
     handleLogout(){
-      Logout()
-      setTimeout(()=>{
-        location.reload();
-      },1000) ;
+      Logout(this.$q)
+
     }
     ,
     test(){

@@ -35,13 +35,14 @@ axiosInstance.interceptors.response.use(
         localStorage.removeItem('accessToken');
         location.href=FountURL;
       }
-
-      if(error.response.data.message === "토큰을 재발행 합니다."){
+      else if(error.response.data.message === "토큰을 재발행 합니다."){
         localStorage.setItem('accessToken' ,error.response.data.result);
         originalRequest.headers.Authorization = `Bearer ${error.response.data.result}`;
         return axiosInstance(originalRequest);
+      }else{
+        localStorage.removeItem('accessToken');
+        location.href=FountURL;
       }
-
       originalRequest._retry = true;
       console.log(error);
 
