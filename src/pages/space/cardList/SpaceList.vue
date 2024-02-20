@@ -2,13 +2,17 @@
 export default {
   name: "SpaceList",
   props: {
-    mySpaceList: Object,
+    mySpaceList: {},
   }
 }
 </script>
 
 <template>
   <div class="spacebox">
+    <div class="spaceCard sj-center"
+         @click="$emit('createTeamSpace')">
+      <div class="spaceCard__create"> Creat TEAM SPACE</div>
+    </div>
     <div class="spaceCard"
          v-for="(data, i) in mySpaceList" :key="i"
          @click="$emit('getClickedSpaceId',data.spaceId)">
@@ -18,9 +22,7 @@ export default {
       <div class="spaceCard__title">{{ data.spaceName }}</div>
       <img :src="data.spaceThumbNailPath" alt=""/>
     </div>
-    <div class="spaceCard sj-center">
-      <div class="spaceCard__create"> Creat TEAM SPACE</div>
-    </div>
+
   </div>
 </template>
 
@@ -38,13 +40,14 @@ export default {
   height: 200px;
   border-radius: 20px;
   position: relative;
-  transition: all 1s ease 0s;
+  transition: all 1.2s ease 0s;
   cursor: pointer;
+  opacity: 0.7;
 
   &:hover {
-    transform: translateY(-10px) scale(102%);
-    opacity: 0.7;
-    box-shadow: black 5px 5px 20px;
+    transform: translateX(-7px) translateY(-7px) scale(95%);
+    opacity: 1;
+    box-shadow: orange 5px 5px 5px;
   }
 
   img {
