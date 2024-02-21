@@ -1,7 +1,7 @@
 <template>
   <q-page class="MessagesPage row container">
     <!-- 사이드 바 -->
-    <AppSidebar ></AppSidebar>
+    <AppSidebar></AppSidebar>
 
     <q-item-section>
       <div class="text-center">
@@ -20,7 +20,7 @@
 
                 <q-btn round flat>
                   <q-avatar>
-<!--                    <img :src="currentConversation.avatar">-->
+                    <!--                    <img :src="currentConversation.avatar">-->
                   </q-avatar>
                 </q-btn>
 
@@ -30,9 +30,9 @@
 
                 <q-space/>
 
-                <q-btn round flat icon="search" />
+                <q-btn round flat icon="search"/>
                 <q-btn round flat>
-                  <q-icon name="attachment" class="rotate-135" />
+                  <q-icon name="attachment" class="rotate-135"/>
                 </q-btn>
                 <q-btn round flat icon="more_vert">
                   <q-menu auto-close :offset="[110, 0]">
@@ -69,12 +69,12 @@
             >
               <q-toolbar class="bg-grey-3">
                 <q-avatar class="cursor-pointer">
-                  <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
+                  <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg"/>
                 </q-avatar>
 
-                <q-space />
+                <q-space/>
 
-<!--                전송버튼은 여기야!-->
+                <!--                전송버튼은 여기야!-->
                 <q-btn round flat icon="message" @click="prompt = true"/>
                 <q-dialog v-model="prompt" persistent>
                   <q-card style="min-width: 350px">
@@ -83,11 +83,11 @@
                     </q-card-section>
 
                     <q-card-section class="q-pt-none">
-                      <q-input dense v-model="roomName" autofocus @keyup.enter="createRoom" />
+                      <q-input dense v-model="roomName" autofocus @keyup.enter="createRoom"/>
                     </q-card-section>
 
                     <q-card-actions align="right" class="text-primary">
-                      <q-btn flat label="취소" v-close-popup />
+                      <q-btn flat label="취소" v-close-popup/>
                       <q-btn flat label="채팅방 생성" v-close-popup @click="createRoom"/>
                     </q-card-actions>
                   </q-card>
@@ -127,22 +127,31 @@
               </q-toolbar>
 
               <q-toolbar class="bg-grey-2">
-                <q-input rounded outlined dense class="WAL__field full-width" bg-color="white" v-model="search" placeholder="Search or start a new conversation">
+                <q-input rounded outlined dense class="WAL__field full-width" bg-color="white" v-model="search"
+                         placeholder="Search or start a new conversation">
                   <template v-slot:prepend>
-                    <q-icon name="search" />
+                    <q-icon name="search"/>
                   </template>
                 </q-input>
               </q-toolbar>
 
-<!--              여기서 채팅방 검색 -->
+              <!--              여기서 채팅방 조회 -->
               <q-scroll-area style="height: calc(100% - 100px)">
                 <q-list>
+<!--                  <q-item-->
+<!--                    v-for="chatRoom in chatRoomList"-->
+<!--                    :key="chatRoom.id"-->
+<!--                    clickable-->
+<!--                    v-ripple-->
+<!--                    @click="selectedChatRoomId=chatRoom.id"-->
+<!--                  >-->
+
                   <q-item
                     v-for="chatRoom in chatRoomList"
                     :key="chatRoom.id"
                     clickable
                     v-ripple
-                    @click="selectedChatRoomId=chatRoom.id"
+                    @click="enterChatRoom(chatRoom)"
                   >
                     <q-item-section avatar>
                       <q-avatar>
@@ -163,15 +172,17 @@
               </q-scroll-area>
             </q-drawer>
 
+<!--            채팅방으로 넘어가는 부분-->
             <q-page-container class="bg-grey-2">
               <ChatListPage :chatRoomId="selectedChatRoomId"></ChatListPage>
             </q-page-container>
 
             <q-footer>
               <q-toolbar class="bg-grey-3 text-black row">
-                <q-btn round flat icon="insert_emoticon" class="q-mr-sm" />
-                <q-input rounded outlined dense class="WAL__field col-grow q-mr-sm" bg-color="white" v-model="message" placeholder="Type a message" />
-                <q-btn round flat icon="mic" />
+                <q-btn round flat icon="insert_emoticon" class="q-mr-sm"/>
+                <q-input rounded outlined dense class="WAL__field col-grow q-mr-sm" bg-color="white" v-model="message"
+                         placeholder="Type a message"/>
+                <q-btn round flat icon="mic"/>
               </q-toolbar>
             </q-footer>
           </q-layout>
@@ -183,17 +194,18 @@
 </template>
 
 <script>
-// import websocket from 'ws';
 import AppSidebar from "components/layout/AppSidebar.vue";
-import {useQuasar} from 'quasar'
-import {computed, ref} from 'vue'
-import {axiosInstance} from "boot/axios";
+import { useQuasar } from 'quasar';
+import { ref, computed } from 'vue';
+import { axiosInstance } from "boot/axios";
 import ChatListPage from "pages/chat/ChatListPage.vue";
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import { BackURL } from "src/services/authService";
 
 export default {
   name: "MessagesPage",
-  components: {ChatListPage, AppSidebar},
-
+  components: { ChatListPage, AppSidebar },
   data() {
     return {
       chatRoomList: [],
@@ -203,47 +215,45 @@ export default {
       searchValue: '',
       isLastPage: false,
       isLoading: false,
-      selectedChatRoomId: null // 채팅방 ID를 설정하거나 가져오는 로직에 맞게 변경
+      selectedChatRoomId: null,
+      stompClient: null,
+      loginUserNickName: null,
+      chatData: '',
+
+      testWhoSubscribed: []
     }
   },
-
-  setup () {
-    const $q = useQuasar()
-
-    const leftDrawerOpen = ref(false)
-    const search = ref('')
-    const message = ref('')
+  setup() {
+    const $q = useQuasar();
+    const leftDrawerOpen = ref(false);
+    const search = ref('');
+    const message = ref('');
     const style = computed(() => ({
       height: $q.screen.height + 'px'
-    }))
-    const roomName = ref('')
-
-    function toggleLeftDrawer () {
-      leftDrawerOpen.value = !leftDrawerOpen.value
+    }));
+    const roomName = ref('');
+    function toggleLeftDrawer() {
+      leftDrawerOpen.value = !leftDrawerOpen.value;
     }
-
     async function createRoom() {
-      console.log(roomName.value)
+      console.log(roomName.value);
       if (roomName.value) {
-        const response = await axiosInstance.post('http://localhost:8080/chat/room/' + roomName.value)
-          .then(response => {
-            console.log(response);
-            if (response.data) {
-              this.chatRoomList.push(response.data.result)
-              roomName.value = ''
-              this.prompt = false
-            }
-
-          })
-          .catch(error => {
-            console.log(error);
-          });
-
+        try {
+          const response = await axiosInstance.post(BackURL + '/chat/room/' + roomName.value);
+          console.log(response);
+          if (response.data) {
+            this.chatRoomList.push(response.data.result);
+            this.loginUser = response.data.message;
+            roomName.value = '';
+            this.prompt = false;
+          }
+        } catch (error) {
+          console.log(error);
+        }
       } else {
-        console.log("Please enter the room name.")
+        console.log("Please enter the room name.");
       }
     }
-
     return {
       leftDrawerOpen,
       search,
@@ -252,73 +262,98 @@ export default {
       roomName,
       prompt: ref(false),
       toggleLeftDrawer,
-      createRoom
+      createRoom,
     }
   },
-
   created() {
     this.loadChatRooms();
+    this.connect();
   },
-
-  mounted() {
-    // scroll 동작이 발생할 때마다 scrollPagination 함수 호출된다는 의미
-    window.addEventListener('scroll', this.scrollPagination);
+  beforeUnmount() {
+    if (this.stompClient) {
+      this.stompClient.deactivate();
+    }
   },
-
   methods: {
-    scrollPagination() {
-      // innerHeight : 브라우저 창의 내부높이를 픽셀단위로 변환
-      // scrollY : 스크롤을 통해 Y축을 이동한 거리
-      // offsetHeight : 전체 브라우저 창의 높이
-      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-      if (nearBottom && !this.isLastPage && !this.isLoading) {
-        this.currentPage++;
-        this.loadChatRooms();
+
+    connect() {
+      // 인증 토큰 얻기
+      let authToken = localStorage.getItem('accessToken');  // 인증 토큰을 얻는 방법은 API나 라이브러리에 따라 달라집니다.
+
+      const socket = new SockJS('http://localhost:8080/ws', [], {
+        headers: { 'Authorization': 'Bearer ' + authToken }  // 토큰을 헤더에 추가
+      });
+
+      socket.onopen = function() {
+        console.log('WebSocket 연결이 열렸습니다.');
+      };
+
+      socket.onmessage = function(event) {
+        console.log('서버로부터 메시지를 수신했습니다:', event.data);
+      };
+
+      socket.onerror = function(error) {
+        console.error('WebSocket 오류 발생:', error);
+      };
+
+      socket.onclose = function(event) {
+        if (event.wasClean) {
+          console.log('WebSocket 연결이 정상적으로 닫혔습니다.');
+        } else {
+          console.error('WebSocket 연결이 끊겼습니다.'); // 예기치 않은 종료
+        }
+        console.log('코드:', event.code, '이유:', event.reason);
+      };
+
+      this.stompClient = new Client({
+        webSocketFactory: () => socket,
+        debug: (str) => console.log(str),
+      });
+
+      this.stompClient.activate();
+    },
+
+    async enterChatRoom(room) {
+      try {
+
+        this.selectedChatRoomId = room.id;
+        const response = await axiosInstance.get('http://localhost:8080/chat/room/enter/' + this.selectedChatRoomId);
+        this.loginUserNickName = response.data.message;
+
+        if (this.stompClient && this.stompClient.connected) {
+          this.stompClient.subscribe(`/user/${this.loginUserNickName}/sub/chat/enter/${this.selectedChatRoomId}`, this.handleMessage);
+          console.log(this.loginUserNickName + '님이 SUBSCRIBE!');
+        } else {
+          console.log('stompClient가 아직 준비되지 않았습니다.');
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
 
-    selectChatRoom(id) {
-      this.$router.push({name: 'ChatRoom', params})
+    handleMessage(message) {
+      let messageBody = JSON.parse(message.body);
+      console.log('Received message:', messageBody);
     },
 
 
-    searchChatRooms() {
-      this.chatRoomList = [];
-      this.currentPage = 0;
-      this.isLastPage = false;
-      this.loadChatRooms();
+    sendMessage() {
+      if (!this.stompClient || !this.stompClient.connected) {
+        console.error('WebSocket is not connected');
+        return;
+      }
+      this.chatData = {"roomId": this.chatRoomList.roomId, "sender": this.loginUserNickName,"message": this.message}
+      this.stompClient.send('/chat/send', {}, this.chatData);
+      console.log('Message sent:', this.chatData);
+      this.message = ''; // Clear the input field after sending the message
     },
 
     async loadChatRooms() {
       this.isLoading = true;
       try {
-        const params = {
-          page: this.currentPage,
-          size: this.pageSize,
-          [this.searchType]: this.searchValue,
-        }
-        console.log(params);
-
-        await axiosInstance.get(
-          `http://localhost:8080/chat/rooms`).then(response => {
-
-            this.chatRoomList = response.data.result;
-            // if (response.data) {
-            //   this.chatRoomList.push(response.data.result)
-            //   roomName.value = ''
-            //   this.prompt = false
-            // }
-
-          })
-          .catch(error => {
-            console.log(error);
-          });
-
-
-        // console.log(response);
-        // const additionalChatRoomList = response.data.result;
-        // this.chatRoomList = additionalChatRoomList;
-      } catch(error) {
+        const response = await axiosInstance.get(BackURL + `/chat/rooms`);
+        this.chatRoomList = response.data.result;
+      } catch (error) {
         console.log(error);
       }
       this.isLoading = false;
@@ -326,10 +361,31 @@ export default {
 
 
   },
+  mounted() {
+    window.addEventListener('scroll', this.scrollPagination);
+  },
+  scrollPagination() {
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+    if (nearBottom && !this.isLastPage && !this.isLoading) {
+      this.currentPage++;
+      this.loadChatRooms();
+    }
+  },
+
+  selectChatRoom(id) {
+    this.$router.push({ name: 'ChatRoom', params });
+  },
+
+  searchChatRooms() {
+    this.chatRoomList = [];
+    this.currentPage = 0;
+    this.isLastPage = false;
+    this.loadChatRooms();
+  },
+
 
 }
 </script>
-
 
 <style lang="sass">
 
@@ -366,6 +422,7 @@ export default {
 @media (max-width: 850px)
   .WAL
     padding: 0
+
     &__layout
       width: 100%
       border-radius: 0
@@ -379,6 +436,6 @@ export default {
   margin-top: 4px
 
 .conversation__more
-  margin-top: 0!important
+  margin-top: 0 !important
   font-size: 1.4rem
 </style>
