@@ -40,6 +40,15 @@ const routes = [
     path: '/Messages',
     component: () => import('pages/chat/MessagesPage.vue')
   }
+  ,
+  {
+    path: '/Register',
+    component: () => import('pages/main/RegisterPage.vue')
+  }
+  ,
+  {
+    path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
+  }
 ]
 
 export default routes
