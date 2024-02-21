@@ -14,9 +14,12 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
+    "@fortawesome/vue-fontawesome": "^3.0.6",
     "@quasar/extras": "^1.16.4",
+    "axios": "^1.6.7",
     "core-js": "^3.31.1",
     "ionicons": "^7.2.2",
+    "pinia": "^2.1.7",
     "quasar": "^2.8.0",
     "vue": "^3.4.18",
     "vue-router": "^4.0.12"
