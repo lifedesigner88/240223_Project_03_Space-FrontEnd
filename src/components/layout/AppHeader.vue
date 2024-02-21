@@ -27,6 +27,9 @@
         <q-menu>
 
           <q-list >
+            <q-item clickable @click="this.$router.push('/PostEditor')">
+              <q-item-section >PostEditor</q-item-section>
+            </q-item>
             <q-item clickable @click="this.$router.push('/MyPage')">
               <q-item-section >My Page</q-item-section>
             </q-item>

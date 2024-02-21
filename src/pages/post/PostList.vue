@@ -36,11 +36,12 @@ export default {
   position: relative;
   transition: all 1s ease 0s;
   cursor: pointer;
-  &:hover {
-    transform:translateY(-10px) scale(102%);
-    opacity: 0.7;
-    box-shadow: black 5px 5px 20px;
-  }
+} 
+.postcard:hover {
+  transform: translateY(-10px) scale(1.02);
+  opacity: 0.7;
+  box-shadow: 5px 5px 20px black;
+}
   img {
     object-fit: cover;
     width: 100%;
@@ -62,6 +63,6 @@ export default {
     white-space:nowrap;
     color: white;
   }
-}
+
 
 </style>
