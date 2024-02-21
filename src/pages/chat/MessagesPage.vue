@@ -142,7 +142,7 @@
                     :key="chatRoom.id"
                     clickable
                     v-ripple
-                    @click="console.log('hi')"
+                    @click="selectedChatRoomId=chatRoom.id"
                   >
                     <q-item-section avatar>
                       <q-avatar>
@@ -164,7 +164,7 @@
             </q-drawer>
 
             <q-page-container class="bg-grey-2">
-              <router-view />
+              <ChatListPage :chatRoomId="selectedChatRoomId"></ChatListPage>
             </q-page-container>
 
             <q-footer>
@@ -183,17 +183,16 @@
 </template>
 
 <script>
-import axios from 'axios';
 // import websocket from 'ws';
 import AppSidebar from "components/layout/AppSidebar.vue";
-import { useQuasar } from 'quasar'
-import { ref, computed } from 'vue'
-const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0dHViaUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcwODQ1MDk1MSwiZXhwIjoxNzA4NDUyNzUxfQ.8V5nLy9VFvCFuWPgoLNSDbsLLO7bn3x3oPgoNc7yrTg";
-const headers = TOKEN ? {Authorization: `Bearer ${TOKEN}`} : {};
+import {useQuasar} from 'quasar'
+import {computed, ref} from 'vue'
+import {axiosInstance} from "boot/axios";
+import ChatListPage from "pages/chat/ChatListPage.vue";
 
 export default {
   name: "MessagesPage",
-  components: {AppSidebar},
+  components: {ChatListPage, AppSidebar},
 
   data() {
     return {
@@ -204,6 +203,7 @@ export default {
       searchValue: '',
       isLastPage: false,
       isLoading: false,
+      selectedChatRoomId: null // 채팅방 ID를 설정하거나 가져오는 로직에 맞게 변경
     }
   },
 
@@ -225,13 +225,20 @@ export default {
     async function createRoom() {
       console.log(roomName.value)
       if (roomName.value) {
-        const response = await axios.post('http://localhost:8080/chat/room' + roomName.value, {headers})
-        console.log(response.data);
-        if (response.data) {
-          this.chatRoomList.push(response.data)
-          roomName.value = ''
-          this.prompt = false
-        }
+        const response = await axiosInstance.post('http://localhost:8080/chat/room/' + roomName.value)
+          .then(response => {
+            console.log(response);
+            if (response.data) {
+              this.chatRoomList.push(response.data.result)
+              roomName.value = ''
+              this.prompt = false
+            }
+
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
       } else {
         console.log("Please enter the room name.")
       }
@@ -270,6 +277,11 @@ export default {
       }
     },
 
+    selectChatRoom(id) {
+      this.$router.push({name: 'ChatRoom', params})
+    },
+
+
     searchChatRooms() {
       this.chatRoomList = [];
       this.currentPage = 0;
@@ -287,16 +299,32 @@ export default {
         }
         console.log(params);
 
-        const response = await axios.get(
-          `http://localhost:8080/chat/rooms`, {headers});
-        console.log(response.data.result);
-        const additionalChatRoomList = response.data.result;
-        this.chatRoomList = additionalChatRoomList;
+        await axiosInstance.get(
+          `http://localhost:8080/chat/rooms`).then(response => {
+
+            this.chatRoomList = response.data.result;
+            // if (response.data) {
+            //   this.chatRoomList.push(response.data.result)
+            //   roomName.value = ''
+            //   this.prompt = false
+            // }
+
+          })
+          .catch(error => {
+            console.log(error);
+          });
+
+
+        // console.log(response);
+        // const additionalChatRoomList = response.data.result;
+        // this.chatRoomList = additionalChatRoomList;
       } catch(error) {
         console.log(error);
       }
       this.isLoading = false;
     },
+
+
   },
 
 }

@@ -48,6 +48,11 @@ const routes = [
   ,
   {
     path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
+  },
+  {
+    path: '/chatlist',
+    component: () => import('pages/chat/ChatListPage.vue'),
+    props: route => ({ chatRoomId: '0830cbde-7394-472d-9bb6-ba5a533057f9' })
   }
 ]
 
