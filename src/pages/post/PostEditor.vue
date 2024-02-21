@@ -1,20 +1,105 @@
+<script>
+import {ref} from 'vue';
+import AppSidebar from "components/layout/AppSidebar.vue";
+import {axiosInstance} from "boot/axios";
+
+const BASE_URL = "http://localhost:8080"
+
+export default {
+  components: {AppSidebar},
+
+  setup() {
+    const title = ref('');
+    const contents = ref('');
+    const spaceId = ref(2);
+    const postStatus = ref('OPEN');
+    const thumbnail = ref([])
+    const attachFileList = ref([])
+
+
+    return {
+      title,
+      contents,
+      spaceId,
+      postStatus,
+      thumbnail,
+      attachFileList,
+    };
+  },
+
+
+
+  methods: {
+    async writePost() {
+      if (confirm("등록하시겠습니까?")){
+        try {
+          const registerData = new FormData();
+
+          // for (let i = 0; i < this.attachFileList.length; i++) {
+          //   let attachFileList = this.attachFileList[i];
+          //   registerData.append(`attachFileList${i + 1}`, attachFileList);
+          // }
+          //
+          // for (let i = 0; i < this.thumbnail.length; i++) {
+          //   let thumbnailTemp = this.thumbnail[i];
+          //   registerData.append(`thumbnail${i + 1}`, thumbnailTemp);
+          // }
+
+          registerData.append("title", this.title)
+          registerData.append("contents", this.contents)
+          registerData.append("postStatus",this.postStatus)
+          registerData.append("spaceId", this.spaceId)
+          registerData.append("thumbnail", this.thumbnail)
+
+
+          for (let entry of registerData.entries()) {
+            console.log(entry);
+          }
+          await axiosInstance.post(`${BASE_URL}/api/post/create`, registerData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+        } catch (e) {
+          console.log(e + "게시글 작성시 전송 오류")
+        } // axios
+      } // confirm
+    } // function(writePost)
+  } // method end
+};
+</script>
+
 <template>
-  <div class="q-pa-md q-gutter-sm">
-    <q-select outlined v-model="spaceId" :options="spaceIDOptions" 
-      label="spaceId"
-      emit-value
-      map-options
-      dense
-      style="width: 150px; font-size: 10px; margin-bottom: 1rem;"
-      bg-color="white"
-    />
-    <!-- 제목 입력란 -->
-    <q-input outlined v-model="title" label="제목" bg-color="white" min-height="5rem" style="margin-bottom: 0rem;" />
-    <!-- 본문 작성 에디터 -->
-    <q-editor 
-    v-model="contents" min-height="15rem"
-    :dense="$q.screen.lt.md" 
-    :toolbar="[
+  <q-page class="sj-container">
+
+      <q-uploader
+        v-model="thumbnail"
+        label="Thumbnail"
+        color="amber"
+        accept="image/*"
+        text-color="black"
+        style="max-width: 300px"
+        class="file__thumbnail"
+      />
+
+      <q-uploader
+        v-model="attachFileList"
+        label="Files upload"
+        multiple
+        no-thumbnails
+        style="max-width: 300px"
+        class="file__multiple"
+      />
+
+    <div class="sj-content">
+
+      <q-btn label="Submit" @click="writePost" class="submit__btn"></q-btn>
+      <q-input outlined v-model="title" label="Title" class="title__box"/>
+
+      <q-editor
+        v-model="contents" min-height="60vh"
+        class="content-box"
+        :toolbar="[
       [
         {
           label: $q.lang.editor.align,
@@ -24,7 +109,7 @@
         }
       ],
       ['bold', 'italic', 'strike', 'underline'],
-      
+
       [
         {
           label: $q.lang.editor.formatting,
@@ -79,7 +164,7 @@
       ['undo', 'redo'],
       ['fullscreen','viewsource']
     ]"
-    :fonts="{
+        :fonts="{
       arial: 'Arial',
       arial_black: 'Arial Black',
       comic_sans: 'Comic Sans MS',
@@ -89,68 +174,89 @@
       times_new_roman: 'Times New Roman',
       verdana: 'Verdana'
     }"
-    
-  />
 
-    <q-btn color="primary" @click="writePost">글쓰기</q-btn>
-  </div>
+      />
+
+    </div>
+
+  </q-page>
+  <AppSidebar></AppSidebar>
 </template>
 
-<script>
-import { ref } from 'vue';
-import axios from "axios";
 
-export default {
-  
-  setup() {
-    const title = ref('');
-    const contents = ref('');
-    const spaceId = ref('2');
-    const postStatus= ref('OPEN');
-    
-    // spaceIDOptions 더미 데이터 정의
-    const spaceIDOptions = [
-      { label: 'Option 1', value: '1' },
-      { label: 'Option 2', value: '2' },
-      // 여러 옵션들을 추가할 수 있습니다.
-    ];
+<style scoped>
 
-    return {
-      title,
-      contents,
-      spaceId,
-    };
-  },
-  methods:{
-        async writePost(){
-            try{                              
-                confirm("등록하시겠습니까")
-                const registerData = new FormData();
-                registerData.append("title", this.title)
-                registerData.append("contents", this.contents)
-                registerData.append("spaceId", this.spaceId)
-                registerData.append("postStatus", this.postStatus)
-                // const token = localStorage.getItem('token');
-                const headers= {Authorization: `eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0dHViaUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcwODQ1NTQ2NiwiZXhwIjoxNzA4NDU3MjY2fQ.nJwAwGfyonncV-_nXrgFwYq8XH4dnpJscAXFMpuy5Fc`};
-                // await axios.post(`${process.env.VUE_APP_BASE_URL}/item/create`, registerData, {headers});
-                const response = await axios.post(`http://localhost:8080/api/post/create`, registerData, {headers});
-                console.log(response.data);
-                // location.href="/login"
-                // this.$router.push(
-                //     {name:'Login'}
-                // )
-            } catch(error){
-                const error_message= error.response?.data.error_message;
-                if(error_message){
-                    console.log(error_message);
-                    console.log(error);
-                    alert(error_message);
-                } else {
-                    console.log(error);
-                    alert("입력 값 확인 필요")
-                }
-            }
-        }
-    }
-};
-</script>
+.sj-container {
+  width: 100vw;
+  //background-color: red;
+  display: grid;
+  grid-template-columns: 2.7fr 8fr 3fr;
+  grid-template-rows: 2fr 5fr;
+  grid-gap:25px
+}
+
+.sj-content {
+  box-sizing: border-box;
+  padding-top: 4vh;;
+  //background-color: gray;
+  width: 100%;
+  height: 100%;
+  grid-column: 2/3;
+  grid-row: 1/3;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: end;
+}
+
+.submit__btn {
+  background-color: orange;
+  color: white;
+  border: none;
+  width: 200px;
+  height: 50px;
+  font-size: 22px;
+  margin: 10px 0;
+  letter-spacing: 5px;
+}
+
+.title__box {
+  width: 100%;
+  margin: 20px 0;
+  box-sizing: border-box;
+  border: 2px solid orange;
+  border-radius: 4px;
+  font-size: 32px;
+  color: orange;
+  background-color: #ffebba;
+  &:hover {
+    background-color: #ffebba;
+    color: orange;
+    outline: none;
+  }
+  &:focus {
+    background-color: red;
+    color: orange;
+    outline: none;
+  }
+}
+
+
+.content-box {
+  margin: 10px 0;
+  width: 100%;
+  background-color: #ffebba;
+  font-size: 2em;
+}
+
+
+.file__thumbnail {
+  grid-column: 3/4;
+  grid-row: 1/2;
+}
+
+.file__multiple {
+  grid-column: 3/4;
+  grid-row: 2/3;
+}
+</style>
