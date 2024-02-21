@@ -48,7 +48,20 @@ const routes = [
   ,
   {
     path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
-  }
+  },
+  {
+    path: '/PostEditor',
+    component: ()=> import('pages/post/PostEditor.vue')
+  },
+  {
+    path: '/PostList',
+    component: ()=> import('pages/post/PostList.vue')
+  },
+  {
+    path: '/PostDetail',
+    component: ()=> import('pages/post/PostDetail.vue')
+  },
+
 ]
 
 export default routes
