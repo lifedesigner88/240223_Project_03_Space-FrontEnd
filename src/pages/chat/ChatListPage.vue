@@ -1,11 +1,11 @@
 <template>
-  <div>
-    {{ chatRoomId }}
-  </div>
-  <div>
-    {{ loginUser }}
-  </div>
-  <div class="q-pa-md row justify-center" v-for="(msg, id) in chatMessage.chatList" :key="id">
+<!--  <div>-->
+<!--    {{ chatRoomId }}-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    {{ loginUser }}-->
+<!--  </div>-->
+  <div class="q-pa-md row justify-center" ref="messageList" v-for="(msg, id) in chatMessage.chatList" :key="id">
     <div style="width: 100%; max-width: 400px">
 
       <q-chat-message v-if="this.loginUser == msg.sender"
@@ -44,7 +44,6 @@ export default {
     },
   },
 
-
   data() {
     return {
       chatMessage: [],
@@ -65,9 +64,7 @@ export default {
         this.roomDetail();
         this.initializeWebSocket()
       }
-
     },
-
   },
 
   setup() {
@@ -81,7 +78,11 @@ export default {
       this.stompClient.connect({}, (frame) => {
         console.log('WebSocket 연결됨');
         this.stompClient.subscribe('/sub/chat/send/' + this.chatRoomId, (response) => {
-          console.log('받은 메시지:', response.body);
+
+          const responseObject = JSON.parse(response.body);
+
+          console.log('받은 메시지:', responseObject);
+          console.log('sender: ', responseObject.sender)
           // const receivedMessage = JSON.parse(response.body);
           // const messageData = {
           //   sender: receivedMessage.loginUser,
@@ -90,15 +91,13 @@ export default {
           // }
 
           const receivedMessage = {
-            sender: response.body.sender, // 다른 정보 채널에서 실제 sender 값을 가져옵니다.
-            message: response.body.message
+            sender: responseObject.sender, // 다른 정보 채널에서 실제 sender 값을 가져옵니다.
+            message: responseObject.message
           };
-
-          console.log("sender!!!" + receivedMessage.sender);
-          console.log("message!!!" + receivedMessage.message);
 
           // 받은 메시지를 채팅목록에 추가
           this.chatMessage.chatList.push(receivedMessage);
+
         });
       }, (error) => {
         console.error('WebSocket 연결 오류:', error);
@@ -120,7 +119,7 @@ export default {
       this.stompClient.send('/pub/chat/send/'+this.chatRoomId, {}, JSON.stringify(messageData));
 
       // 대화 목록에 메시지를 추가
-      this.chatMessage.chatList.push(messageData);
+      // this.chatMessage.chatList.push(messageData);
 
       this.message = '';
     },
@@ -137,6 +136,16 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+
+    // 스크롤을 아래로 내리는 메서드
+    scrollToBottom() {
+      this.$nextTick(() => {
+        let container = this.$refs.messageList;
+        if (container.scrollHeight > 0) {
+          container.scroll({ top: container.scrollHeight, behavior: 'smooth' });
+        }
+      });
     },
   },
 

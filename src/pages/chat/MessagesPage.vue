@@ -6,7 +6,7 @@
     <q-item-section>
       <div class="text-center">
 
-        <div class="WAL position-relative size" :style="style">
+        <div class="WAL position-relative bg-grey-4 size" :style="style">
           <q-layout view="lHh Lpr lFf" class="WAL__layout shadow-3" container>
             <q-header elevated>
               <q-toolbar class="bg-grey-3 text-black">
@@ -169,14 +169,7 @@
               <ChatListPage :chatRoomId="selectedChatRoomId" :stomp-client="stompClient"></ChatListPage>
             </q-page-container>
 
-            <q-footer>
-              <q-toolbar class="bg-grey-3 text-black row">
-                <q-btn round flat icon="insert_emoticon" class="q-mr-sm"/>
-                <q-input rounded outlined dense class="WAL__field col-grow q-mr-sm" bg-color="white" v-model="message"
-                         placeholder="Type a message"/>
-                <q-btn round flat icon="mic"/>
-              </q-toolbar>
-            </q-footer>
+
           </q-layout>
         </div>
 
