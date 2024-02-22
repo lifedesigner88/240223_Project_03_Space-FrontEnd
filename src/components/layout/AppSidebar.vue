@@ -5,16 +5,17 @@
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/PostEditor')"
-        > Posting</q-btn>
+               @click="this.$router.push('/MyPage')"
+        > My Page</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/MyPage')"
-        > My Page</q-btn>
+               @click="this.$router.push('/PostEditor')"
+        > Posting</q-btn>
       </p>
+
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
