@@ -1,22 +1,25 @@
 <template>
-  <q-page class="post-editor row container">
-    <AppSidebar></AppSidebar>
+  <q-page class="sj-container">
+    <div class="sj-content">
 
-    <q-item-section class="text-center">
-
-      <div class="q-pa-md q-gutter-sm ">
+      <q-item-section class="editor__aline">
         <form
           @submit.prevent="submitPost"
           autocorrect="off"
           autocapitalize="off"
           autocomplete="off"
           spellcheck="false"
+          style=" width: 100%"
         >
           <q-card class="q-my-lg q-ma-sm row">
-            <q-input placeholder="제목을 입력하세요."  class="col-10" standout v-model=title  required ></q-input>
-            <q-btn class="col-2 bg-orange text-white" type="submit" > 글쓰기 </q-btn>
+            <q-input placeholder="제목을 입력하세요." class="col-10" standout v-model=title required></q-input>
+            <q-btn class="col-2 bg-orange text-white submit" type="submit">SUBMIT</q-btn>
           </q-card>
-
+          <MySpaceList
+            :mySpaceList="mySpaceList"
+            @getClickedSpaceId="spaceId=$event"
+            style="padding: 40px 50px 50px 50px"
+          />
           <q-editor
             class="q-ma-sm"
             ref="editorRef"
@@ -24,15 +27,17 @@
             :toolbar="[['left','center','right','justify'],['bold','italic','underline','strike'],['undo','redo'],['insert_img']]"
             v-model="editor"
           />
+          <q-card flat bordered class="q-pa-md q-ma-lg">
+            <p class="Preiview"> Preiview </p>
+            <div v-html="renderedHtml"></div>
+          </q-card>
         </form>
-      </div>
-        <p class="q-pa-md q-ma-lg text-white"> 화면을 미리 확인하세요 </p>
-        <q-card flat bordered class="q-pa-md q-ma-lg">
-          <div v-html="renderedHtml"></div>
-        </q-card>
-    </q-item-section>
 
+      </q-item-section>
+    </div>
   </q-page>
+
+  <AppSidebar></AppSidebar>
 
 </template>
 
@@ -40,17 +45,20 @@
 
 import AppSidebar from "components/layout/AppSidebar.vue";
 import {axiosInstance} from "boot/axios";
+import MySpaceList from "pages/space/cardList/MySpaceList.vue";
 
 const BASE_URL = "http://localhost:8080"
 
 export default {
-  components: {AppSidebar},
-  data (){
+  components: {MySpaceList, AppSidebar},
+  data() {
     return {
-      title:'',
+      title: '',
       editor: '',
-      definitions :{
-        insert_img :{
+      spaceId: 0,
+      mySpaceList: {},
+      definitions: {
+        insert_img: {
           tip: '사진첨부',
           icon: 'photo',
           handler: this.insertImg
@@ -63,18 +71,28 @@ export default {
       return this.editor;
     }
   },
-  methods:{
-    insertImg(){
+  methods: {
+
+    async loadMySpacesByEmail() {
+      try {
+        const response = await axiosInstance.get(`${BASE_URL}/space/my`);
+        this.mySpaceList = response.data.result
+      } catch (e) {
+        console.log(e + "모든 스페이스 가져오기 실패");
+      }
+    },
+
+    insertImg() {
       const input = document.createElement('input')
       input.type = 'file'
       input.accept = '.png, .jgp'
       let file
-      input.onchange= _ =>{
+      input.onchange = _ => {
         const files = Array.from(input.files)
         file = files[0]
 
         const reader = new FileReader()
-        reader.onloadend = () =>{
+        reader.onloadend = () => {
           const blob = this.base64ToBlob(reader.result);
           const url = URL.createObjectURL(blob);
 
@@ -106,7 +124,7 @@ export default {
         uint8Array[i] = byteString.charCodeAt(i);
       }
 
-      return new Blob([uint8Array], { type: mimeString });
+      return new Blob([uint8Array], {type: mimeString});
     }
     ,
     async submitPost() {
@@ -115,13 +133,18 @@ export default {
         return;
       }
 
-      if(confirm("작성하시겠습니까?")){
+      if (this.spaceId === 0) {
+        alert('포스팅할 스페이스를 클릭해주세요');
+        return;
+      }
+
+      if (confirm("작성하시겠습니까?")) {
         try {
           const editors = this.editor
           const formData = new FormData();
           formData.append('title', this.title);
           formData.append('contents', editors);
-          formData.append('spaceId',1);
+          formData.append('spaceId', this.spaceId);
 
           // 이미지 파일 추가
           const images = this.$refs.editorRef.$el.querySelectorAll("img");
@@ -149,11 +172,42 @@ export default {
         this.$router.push('/') // 홈 라우팅
       }
     }
-  }
+  },
 
+  created() {
+    this.loadMySpacesByEmail();
+  },
 };
+
 </script>
 
 <style scoped>
 
+.sj-container {
+  width: 100vw;
+  //background-color: red;
+  display: grid;
+  grid-template-columns: 2.7fr 8fr 1.2fr;
+}
+
+.sj-content {
+  box-sizing: border-box;
+  //background-color: gray;
+  width: 100%;
+  height: 100%;
+  grid-column-start: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+}
+
+.editor__aline {
+  width: 100%;
+}
+
+.submit {
+  font-size: 25px;
+  letter-spacing: 4px;
+}
 </style>
