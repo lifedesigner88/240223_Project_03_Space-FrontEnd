@@ -167,8 +167,9 @@ export default {
 }
 .card-size {
   width: 50vw;
-  background-color: orange;
+  background-color: #ffe5b6;
   padding: 2vw;
+  border-radius: 20px;
 
 }
 .input__size {
