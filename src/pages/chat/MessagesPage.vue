@@ -193,7 +193,6 @@
   </q-page>
 </template>
 
-
 <script>
 import AppSidebar from "components/layout/AppSidebar.vue";
 import { useQuasar } from 'quasar';
