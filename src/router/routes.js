@@ -33,14 +33,14 @@ const routes = [
     component: () => import('pages/space/CreateSpaceCompo.vue'),
     props: true
   },
-  {
-    path: '/Kanban',
-    component: () => import('pages/schedule/KanbanPage.vue')
-  },
-  {
-    path: '/Calendar',
-    component: () => import('pages/schedule/CalendarPage.vue')
-  },
+  // {
+  //   path: '/Kanban',
+  //   component: () => import('pages/schedule/KanbanPage.vue')
+  // },
+  // {
+  //   path: '/Calendar',
+  //   component: () => import('pages/schedule/CalendarPage.vue')
+  // },
   {
     path: '/Messages',
     component: () => import('pages/chat/MessagesPage.vue')

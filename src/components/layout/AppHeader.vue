@@ -42,12 +42,12 @@
             <q-item clickable @click="this.$router.push('/GroupSpace/GROUP')">
               <q-item-section>Group SPACE</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/Kanban')">
-              <q-item-section>Kanban</q-item-section>
-            </q-item>
-            <q-item clickable @click="this.$router.push('/Calendar')">
-              <q-item-section>Calendar</q-item-section>
-            </q-item>
+<!--            <q-item clickable @click="this.$router.push('/Kanban')">-->
+<!--              <q-item-section>Kanban</q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item clickable @click="this.$router.push('/Calendar')">-->
+<!--              <q-item-section>Calendar</q-item-section>-->
+<!--            </q-item>-->
             <q-item clickable @click="this.$router.push('/Messages')">
               <q-item-section>MessagesPage</q-item-section>
             </q-item>

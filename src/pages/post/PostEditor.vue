@@ -11,15 +11,17 @@
           spellcheck="false"
           style=" width: 100%"
         >
-          <q-card class="q-my-lg q-ma-sm row">
-            <q-input placeholder="제목을 입력하세요." class="col-10" standout v-model=title required></q-input>
-            <q-btn class="col-2 bg-orange text-white submit" type="submit">SUBMIT</q-btn>
-          </q-card>
           <MySpaceList
             :mySpaceList="mySpaceList"
             @getClickedSpaceId="spaceId=$event"
             style="padding: 40px 50px 50px 50px"
           />
+
+          <q-card class="q-my-lg q-ma-sm row">
+            <q-input placeholder="제목을 입력하세요." class="col-10" standout v-model=title required></q-input>
+            <q-btn class="col-2 bg-orange text-white submit" type="submit">SUBMIT</q-btn>
+          </q-card>
+
           <q-editor
             class="q-ma-sm"
             ref="editorRef"

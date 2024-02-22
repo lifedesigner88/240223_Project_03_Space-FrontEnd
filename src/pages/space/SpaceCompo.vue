@@ -3,8 +3,8 @@ import AppSidebar from "components/layout/AppSidebar.vue";
 import {columns, rows} from "assets/data/SpaceTableData/forInviteMembers";
 import {ref} from "vue";
 import SpaceList from "pages/space/cardList/SpaceList.vue";
-import {jwtDecode} from "jwt-decode";
 import {axiosInstance} from "boot/axios";
+import PostList from "pages/post/PostList.vue";
 
 const BASE_URL = "http://localhost:8080"
 
@@ -63,15 +63,20 @@ export default {
     },
 
 
-    async postsBySpaceId() {
+    async postsBySpaceId(id) {
       try {
-        const response = await axiosInstance.get(`${BASE_URL}/space/${clickedSpaceId}/posts`);
+        const response = await axiosInstance.get(`${BASE_URL}/space/${id}/posts`);
         this.getPostsBySpaceId = response.data.result
         console.log(this.mySpaceList)
         console.log("end")
       } catch (e) {
         console.log(e);
       }
+    },
+
+    goToPostDetail(event){
+      console.log(event)
+      this.$router.push( `/PostDetail/${event}`  );
     },
 
 
@@ -88,13 +93,11 @@ export default {
     getMembersPostsSchedule(id) {
       this.viewMembersTable = true
       this.membersBySpaceId(id)
-      console.log(this.selected)
-      // this.postsBySpaceId()
-      // this.schedulesBySpaceId()
+      this.postsBySpaceId(id)
     },
 
   },
-  components: { SpaceList, AppSidebar},
+  components: {PostList, SpaceList, AppSidebar},
   created() {
     this.loadMySpacesByEmail();
   },
@@ -142,8 +145,14 @@ export default {
         <template v-slot:body-selection="scope">
           <q-toggle v-model="scope.selected"/>
         </template>
-
       </q-table>
+
+      <PostList
+        class="postList__css"
+        :postDatas="getPostsBySpaceId"
+        @PostDtailOpen = "goToPostDetail($event)"
+      />
+
 
     </div>
   </q-page>

@@ -128,7 +128,8 @@ export default {
 
 .spaceCard__create {
   font-size: 25px;
-  color: white;
+  color: orange;
+  font-weight: bold;
   line-height: 1.7;
 }
 </style>
