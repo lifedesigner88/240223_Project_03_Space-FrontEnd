@@ -33,13 +33,13 @@
             <q-item clickable @click="this.$router.push('/MyPage')">
               <q-item-section >My Page</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/MySpace')">
+            <q-item clickable @click="this.$router.push('/MySpace/MY')">
               <q-item-section>My SPACE</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/TeamSpace')">
+            <q-item clickable @click="this.$router.push('/TeamSpace/TEAM')">
               <q-item-section>Team SPACE</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/GroupSpace')">
+            <q-item clickable @click="this.$router.push('/GroupSpace/GROUP')">
               <q-item-section>Group SPACE</q-item-section>
             </q-item>
             <q-item clickable @click="this.$router.push('/Kanban')">

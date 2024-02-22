@@ -12,18 +12,20 @@ const routes = [
   }
   ,
   {
-    path: '/MySpace',
-    component: () => import('pages/space/MySpace.vue')
-  }
-  ,
+    path: '/MySpace/:SpaceType',
+    component: () => import('pages/space/SpaceCompo.vue'),
+    props: true
+
+  },
   {
-    path: '/TeamSpace',
-    component: () => import('pages/space/TeamSpace.vue')
-  }
-  ,
+    path: '/TeamSpace/:SpaceType',
+    component: () => import('pages/space/SpaceCompo.vue'),
+    props: true
+  },
   {
-    path: '/GroupSpace',
-    component: () => import('pages/space/GroupSpace.vue')
+    path: '/GroupSpace/:SpaceType',
+    component: () => import('pages/space/SpaceCompo.vue'),
+    props: true
   },
   {
     path: '/SpaceCreate/:SpaceType',
@@ -34,23 +36,19 @@ const routes = [
   {
     path: '/Kanban',
     component: () => import('pages/schedule/KanbanPage.vue')
-  }
-  ,
+  },
   {
     path: '/Calendar',
     component: () => import('pages/schedule/CalendarPage.vue')
-  }
-  ,
+  },
   {
     path: '/Messages',
     component: () => import('pages/chat/MessagesPage.vue')
-  }
-  ,
+  },
   {
     path: '/Register',
     component: () => import('pages/main/RegisterPage.vue')
-  }
-  ,
+  },
   {
     path: '/oauth2/redirect', component: () => import('components/shared/OAuthRedirect.vue')
   },

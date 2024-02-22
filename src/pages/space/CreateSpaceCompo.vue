@@ -51,15 +51,6 @@ export default {
       }
     },
 
-
-    getAllMembersforCreat(id) {
-      this.viewMembersTable = true
-      this.getAllMembersBySpaceId(id)
-      console.log(this.selected)
-      // this.postsBySpaceId()
-      // this.schedulesBySpaceId()
-    },
-
     async createTeamSpace() {
       const TOKEN = localStorage.getItem('accessToken')
       const email = jwtDecode(TOKEN).sub;
@@ -81,7 +72,12 @@ export default {
       }
 
       try {
+      if(this.SpaceType === "TEAM")
         await axiosInstance.post(`${BASE_URL}/space/create/team`, postData);
+      if(this.SpaceType === "GROUP")
+          await axiosInstance.post(`${BASE_URL}/space/create/group`, postData);
+        if(this.SpaceType === "MY")
+          await axiosInstance.post(`${BASE_URL}/space/create/my`, postData);
       } catch (e) {
         console.log(e + "스페이스 생성 실패");
       }

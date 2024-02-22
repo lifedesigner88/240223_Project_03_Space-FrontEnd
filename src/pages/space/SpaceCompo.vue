@@ -10,12 +10,17 @@ const BASE_URL = "http://localhost:8080"
 
 
 export default {
+  name: "SpaceDetail",
   setup() {
     return {
       selected: ref([]),
       columns,
       rows
     }
+  },
+
+  props: {
+    SpaceType: String
   },
 
   data() {
@@ -33,11 +38,9 @@ export default {
       spaceName: '',
       description: '',
 
-      SpaceType:"TEAM"
     }
   },
 
-  name: "GroupSpace",
   methods: {
     async loadMySpacesByEmail() {
       try {
@@ -82,7 +85,6 @@ export default {
       }
     },
 
-
     getMembersPostsSchedule(id) {
       this.viewMembersTable = true
       this.membersBySpaceId(id)
@@ -91,51 +93,15 @@ export default {
       // this.schedulesBySpaceId()
     },
 
-    async createTeamSpace() {
-      const TOKEN = localStorage.getItem('accessToken')
-      const email = jwtDecode(TOKEN).sub;
-      try {
-        let members = this.selected
-          .filter(obj => obj.email !== email)
-          .map(obj => {
-            return {
-              memberEmail: obj.email,
-              spaceRole: "CREW"
-            }
-          })
-
-        members = [...members, {memberEmail: email, spaceRole: "CAPTAIN"}]
-        const postData = {
-          "spaceName" : this.spaceName,
-          "description": this.description,
-          "spaceThumbNailPath" : "https://picsum.photos/2",
-          "spaceMembers": members
-        }
-
-        try {
-           await axiosInstance.post(`${BASE_URL}/space/create/team`, postData);
-        } catch (e) {
-          console.log(e + "스페이스 생성 실패");
-        }
-
-        try {
-          const response = await axiosInstance.get(`${BASE_URL}/space/my`);
-          this.AllSpaceList = response.data.result
-          this.mySpaceList = this.AllSpaceList.filter(space => space.spaceType === 'MY');
-        } catch (e) {
-          console.log(e + "모든 스페이스 가져오기 실패");
-        }
-
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
   },
   components: { SpaceList, AppSidebar},
   created() {
     this.loadMySpacesByEmail();
   },
+  updated() {
+    this.loadMySpacesByEmail();
+    this.viewMembersTable = false
+  }
 }
 </script>
 
@@ -143,7 +109,7 @@ export default {
   <q-dialog v-model="dialog">
     <q-card>
       <q-card-section>
-        <q-input outlined v-model="spaceName" label="팀 스페이스 제목" />
+        <q-input outlined v-model="spaceName" :label="`${SpaceType} 스페이스 이름`" />
         <q-input outlined v-model="description" label="간단한 설명" />
       </q-card-section>
       <q-card-actions>
@@ -155,7 +121,6 @@ export default {
 
   <q-page class="sj-container">
     <div class="sj-content">
-
 
       <SpaceList
         :mySpaceList="mySpaceList"

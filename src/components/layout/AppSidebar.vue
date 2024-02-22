@@ -12,21 +12,21 @@
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/MySpace')"
+               @click="this.$router.push('/MySpace/MY')"
         > My SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/TeamSpace')"
+               @click="this.$router.push('/TeamSpace/TEAM')"
         > Team SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/GroupSpace')"
+               @click="this.$router.push('/GroupSpace/GROUP')"
         > Group SPACE</q-btn>
       </p>
       <p>
