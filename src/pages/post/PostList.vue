@@ -11,9 +11,10 @@ export default {
   <div class="postbox">
     <div class="postcard"
          v-for="(data, i) in postDatas" :key="i"
-         @click="$emit('PostDtailOpen',data)">
+         @click="$emit('PostDtailOpen',data.postId)">
       <div class="postcard__title">{{ data.title }}</div>
-      <img :src="data.image" alt=""/>
+      <img :src="`https://picsum.photos/30${10+data.postId%90}`" alt=""/>
+<!--      <img :src="data.thumbnail" alt=""/>-->
     </div>
   </div>
 </template>
@@ -34,13 +35,14 @@ export default {
   height: 300px;
   border-radius: 20px;
   position: relative;
-  transition: all 1s ease 0s;
+  transition: all 0.5s ease 0s;
   cursor: pointer;
-} 
+  opacity: 0.5;
+}
 .postcard:hover {
   transform: translateY(-10px) scale(1.02);
-  opacity: 0.7;
-  box-shadow: 5px 5px 20px black;
+  opacity: 1;
+  box-shadow: 5px 5px 20px orange;
 }
   img {
     object-fit: cover;
@@ -63,6 +65,7 @@ export default {
     white-space:nowrap;
     color: white;
   }
+
 
 
 </style>

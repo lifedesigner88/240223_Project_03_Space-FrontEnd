@@ -1,10 +1,15 @@
 <script>
 import {ref} from 'vue'
+// import postDatas from "../../assets/data/postdata"
+import PostList from "pages/post/PostList.vue";
+import {axiosInstance} from "boot/axios";
+const BASE_URL = "http://localhost:8080"
+
 
 export default {
+  components: {PostList},
   setup() {
     const items = ref([{}, {}, {}, {}, {}, {}, {}])
-
     return {
       slide: ref(1),
       autoplay: ref(true),
@@ -17,9 +22,12 @@ export default {
         }, 2000)
       }
     }
+  },
 
-
-
+  data() {
+    return {
+      postDatas: [],
+    }
   },
 
   methods: {
@@ -27,8 +35,24 @@ export default {
       window.open('https://playdata.io/', '_blank');
     },
 
-
+    async loadPost() {
+      try {
+        const response = await axiosInstance.get(`${BASE_URL}/api/post/list`);
+        this.postDatas = response.data.result
+        this.postDatas.reverse()
+      } catch (e) {
+        console.log(e + "모든 스페이스 가져오기 실패");
+      }
+    },
+    goToPostDetail(event){
+      console.log(event)
+      this.$router.push( `/PostDetail/${event}`  );
+    }
   },
+
+  created(){
+    this.loadPost()
+  }
 }
 </script>
 
@@ -62,28 +86,34 @@ export default {
       <q-img class="breathing-animation" src="../../../public/image/home/map.png" height="926" width="1920" alt=""/>
 
     </q-card-section>
-    <q-card-section class="text-center">
-      <q-infinite-scroll @load="onLoad" :offset="200">
-        <div v-for="(item, index) in items" :key="index" class="caption row justify-center">
-          <q-card class="my-card q-my-lg q-mx-lg" v-for="index in 2" :key="index">
-            <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-              <div class="absolute-bottom text-h6">
-                제목
-              </div>
-            </q-img>
 
-            <q-card-section>
-              <p>대충 내용</p>
-            </q-card-section>
-          </q-card>
-        </div>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-dots color="grey" size="40px"/>
-          </div>
-        </template>
-      </q-infinite-scroll>
-    </q-card-section>
+   <PostList
+     class="postList__css"
+     :postDatas="postDatas"
+     @PostDtailOpen = "goToPostDetail($event)"
+   />
+<!--    <q-card-section class="text-center">-->
+<!--      <q-infinite-scroll @load="onLoad" :offset="200">-->
+<!--        <div v-for="(item, index) in items" :key="index" class="caption row justify-center">-->
+<!--          <q-card class="my-card q-my-lg q-mx-lg" v-for="index in 4" :key="index">-->
+<!--            <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">-->
+<!--              <div class="absolute-bottom text-h6">-->
+<!--                제목-->
+<!--              </div>-->
+<!--            </q-img>-->
+
+<!--            <q-card-section>-->
+<!--              <p>대충 내용</p>-->
+<!--            </q-card-section>-->
+<!--          </q-card>-->
+<!--        </div>-->
+<!--        <template v-slot:loading>-->
+<!--          <div class="row justify-center q-my-md">-->
+<!--            <q-spinner-dots color="grey" size="40px"/>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </q-infinite-scroll>-->
+<!--    </q-card-section>-->
   </q-page>
 </template>
 
@@ -116,5 +146,9 @@ export default {
 
 .home-page {
   width: 100vw
+}
+
+.postList__css {
+  padding: 30px;
 }
 </style>

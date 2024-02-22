@@ -146,6 +146,7 @@ export default {
         } catch (error) {
           console.error('Error submitting post:', error);
         }
+        this.$router.push('/') // 홈 라우팅
       }
     }
   }
