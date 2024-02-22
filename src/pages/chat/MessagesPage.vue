@@ -214,7 +214,6 @@ export default {
 
       message: '',
       messages: [],
-      stompClient: null
     }
   },
   setup() {
@@ -263,27 +262,13 @@ export default {
   },
 
   created() {
-    this.initializeWebSocket();
     this.loadChatRooms();
   },
 
   mounted() {
     window.addEventListener('scroll', this.scrollPagination);
-    this.initializeWebSocket();
-    this.stompClient.connect({}, () => {
-      // 특정 토픽 구독
-      this.stompClient.subscribe('/sub/chat/send', (response) => {
-        console.log('Received message:', response.body);
-        // 메시지를 받았을 때 실행할 작업 추가
-      });
-    });
   },
   methods: {
-    initializeWebSocket() {
-      const socket = new SockJS('http://localhost:8080/ws'); // 백엔드 WebSocket 엔드포인트 URL
-      this.stompClient = Stomp.over(socket);
-    },
-
     async loadChatRooms() {
       this.isLoading = true;
       try {
@@ -302,28 +287,10 @@ export default {
         const response = await axiosInstance.get('http://localhost:8080/chat/room/enter/' + this.selectedChatRoomId);
         this.loginUserNickName = response.data.message;
 
-        if (this.stompClient && this.stompClient.connected) {
-          this.stompClient.subscribe(`/user/${this.loginUserNickName}/sub/chat/enter/${this.selectedChatRoomId}`);
-          console.log(this.loginUserNickName + '님이 SUBSCRIBE!');
-        } else {
-          console.log('stompClient가 아직 준비되지 않았습니다.');
-        }
       } catch (error) {
         console.log(error);
       }
     },
-
-    // sendMessage() {
-    //   // 채팅 메시지를 전송하고 싶은 경우
-    //   this.stompClient.send('/pub/chat/send', {}, JSON.stringify({
-    //     // 채팅 메시지 내용
-    //     sender: this.loginUserNickName,
-    //     roomId: this.selectedChatRoomId,
-    //     message: 123123
-    //   }));
-    //   // 메시지를 보낸 후 필요한 작업 수행
-    //   this.message = '';
-    // }
   },
 
   scrollPagination() {
