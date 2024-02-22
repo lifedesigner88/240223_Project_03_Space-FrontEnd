@@ -17,19 +17,3 @@ export const rows = [
   {role: 'Frozen Yogurt', name: 'name', nickName: 6.0, email: 24, options: ``},
 ]
 
-
-
-
-//
-// {
-//   "httpStatus": "OK",
-//   "message": "스페이스의 맴버 정보를 조회하였습니다",
-//   "result": [
-//   {
-//     "role": "CAPTAIN",
-//     "name": "박세종",
-//     "nickName": "라이프디자이너",
-//     "email": "life@gamil.com"
-//   }
-// ]
-// }

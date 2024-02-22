@@ -8,6 +8,9 @@ import {axiosInstance} from "boot/axios";
 
 const BASE_URL = "http://localhost:8080"
 
+// export default {
+//   name: "CreateSpaceCompo"
+}
 
 export default {
   setup() {
@@ -20,7 +23,6 @@ export default {
 
   data() {
     return {
-      AllSpaceList: {},
       mySpaceList: {},
       getMembersBySpaceId: [],
       getPostsBySpaceId: Object,
@@ -33,7 +35,6 @@ export default {
       spaceName: '',
       description: '',
 
-      SpaceType:"TEAM"
     }
   },
 
@@ -42,8 +43,7 @@ export default {
     async loadMySpacesByEmail() {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/space/my`);
-        this.AllSpaceList = response.data.result
-        this.mySpaceList = this.AllSpaceList.filter(space => space.spaceType === this.SpaceType)
+        this.mySpaceList = response.data.result
       } catch (e) {
         console.log(e + "모든 스페이스 가져오기 실패");
       }
@@ -113,15 +113,14 @@ export default {
         }
 
         try {
-           await axiosInstance.post(`${BASE_URL}/space/create/team`, postData);
+          await axiosInstance.post(`${BASE_URL}/space/create/team`, postData);
         } catch (e) {
           console.log(e + "스페이스 생성 실패");
         }
 
         try {
           const response = await axiosInstance.get(`${BASE_URL}/space/my`);
-          this.AllSpaceList = response.data.result
-          this.mySpaceList = this.AllSpaceList.filter(space => space.spaceType === 'MY');
+          this.mySpaceList = response.data.result
         } catch (e) {
           console.log(e + "모든 스페이스 가져오기 실패");
         }
@@ -160,7 +159,7 @@ export default {
       <SpaceList
         :mySpaceList="mySpaceList"
         @getClickedSpaceId="getMembersPostsSchedule($event)"
-        @GoToCreate=" $router.push(`/SpaceCreate/${SpaceType}`)"
+        @createTeamSpace=" dialog=true"
       />
 
       <q-table

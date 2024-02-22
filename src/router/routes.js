@@ -24,8 +24,13 @@ const routes = [
   {
     path: '/GroupSpace',
     component: () => import('pages/space/GroupSpace.vue')
-  }
-  ,
+  },
+  {
+    path: '/SpaceCreate/:SpaceType',
+    name:'SpaceCreate',
+    component: () => import('pages/space/CreateSpaceCompo.vue'),
+    props: true
+  },
   {
     path: '/Kanban',
     component: () => import('pages/schedule/KanbanPage.vue')
@@ -63,6 +68,7 @@ const routes = [
     component: () => import('pages/post/PostDetail.vue'),
     props: true
   },
+
 
 ]
 
