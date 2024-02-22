@@ -88,21 +88,26 @@ export default {
         console.error('WebSocket 연결 오류:', error);
       });
     },
+
     sendMessage() {
       if (!this.stompClient || !this.stompClient.connected) {
         console.error('STOMP connection is not established yet.');
         return;
       }
-
-      this.stompClient.send('/pub/chat/send/'+this.chatRoomId, {}, JSON.stringify({
-        // 채팅 메시지 내용
+      const messageData = {
         sender: this.loginUser,
         roomId: this.chatRoomId,
         message: this.message
-      }));
+      }
+      console.log("Sending Data: ", messageData);
+
+
+      this.stompClient.send('/pub/chat/send/'+this.chatRoomId, {}, JSON.stringify(messageData));
+
       // 메시지를 보낸 후 필요한 작업 수행
       this.message = '';
     },
+
     roomDetail() {
       if (this.chatRoomId === null) {
         return;
