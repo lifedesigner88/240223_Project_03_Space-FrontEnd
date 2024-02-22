@@ -14,7 +14,9 @@ export default {
          @click="$emit('PostDtailOpen',data.postId)">
       <div class="postcard__title">{{ data.title }}</div>
       <img :src="`https://picsum.photos/30${10+data.postId%90}`" alt=""/>
-<!--      <img :src="data.thumbnail" alt=""/>-->
+<!--      <img :src=data.thumbnail alt=""/>-->
+<!--<div class="text-white">{{data.thumbnail}}</div>-->
+
     </div>
   </div>
 </template>
