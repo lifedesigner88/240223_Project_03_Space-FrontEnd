@@ -5,17 +5,7 @@
 
     <q-item-section>
     <div class="text-white text-center">
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
-      <h1>my-page</h1>
+      <h1>MY-PAGE</h1>
     </div>
     </q-item-section>
   </q-page>

@@ -10,8 +10,8 @@ export default {
 <template>
   <div class="spacebox">
     <div class="spaceCard sj-center"
-         @click="$emit('createTeamSpace')">
-      <div class="spaceCard__create"> Creat TEAM SPACE</div>
+         @click="$emit('GoToCreate')">
+      <div class="spaceCard__create"> GO TO CREATE</div>
     </div>
 
 

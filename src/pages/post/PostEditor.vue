@@ -11,6 +11,7 @@
           spellcheck="false"
           style=" width: 100%"
         >
+
           <q-card class="q-my-lg q-ma-sm row">
             <q-input placeholder="제목을 입력하세요." class="col-10" standout v-model=title required></q-input>
             <q-btn class="col-2 bg-orange text-white submit" type="submit">SUBMIT</q-btn>

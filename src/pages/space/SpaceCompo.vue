@@ -3,13 +3,14 @@ import AppSidebar from "components/layout/AppSidebar.vue";
 import {columns, rows} from "assets/data/SpaceTableData/forInviteMembers";
 import {ref} from "vue";
 import SpaceList from "pages/space/cardList/SpaceList.vue";
-import {jwtDecode} from "jwt-decode";
 import {axiosInstance} from "boot/axios";
+import PostList from "pages/post/PostList.vue";
 
 const BASE_URL = "http://localhost:8080"
 
 
 export default {
+  name: "SpaceDetail",
   setup() {
     return {
       selected: ref([]),
@@ -18,8 +19,13 @@ export default {
     }
   },
 
+  props: {
+    SpaceType: String
+  },
+
   data() {
     return {
+      AllSpaceList: {},
       mySpaceList: {},
       getMembersBySpaceId: [],
       getPostsBySpaceId: Object,
@@ -35,12 +41,12 @@ export default {
     }
   },
 
-  name: "GroupSpace",
   methods: {
     async loadMySpacesByEmail() {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/space/my`);
-        this.mySpaceList = response.data.result
+        this.AllSpaceList = response.data.result
+        this.mySpaceList = this.AllSpaceList.filter(space => space.spaceType === this.SpaceType)
       } catch (e) {
         console.log(e + "모든 스페이스 가져오기 실패");
       }
@@ -57,15 +63,20 @@ export default {
     },
 
 
-    async postsBySpaceId() {
+    async postsBySpaceId(id) {
       try {
-        const response = await axiosInstance.get(`${BASE_URL}/space/${clickedSpaceId}/posts`);
+        const response = await axiosInstance.get(`${BASE_URL}/space/${id}/posts`);
         this.getPostsBySpaceId = response.data.result
         console.log(this.mySpaceList)
         console.log("end")
       } catch (e) {
         console.log(e);
       }
+    },
+
+    goToPostDetail(event){
+      console.log(event)
+      this.$router.push( `/PostDetail/${event}`  );
     },
 
 
@@ -79,59 +90,21 @@ export default {
       }
     },
 
-
     getMembersPostsSchedule(id) {
       this.viewMembersTable = true
       this.membersBySpaceId(id)
-      console.log(this.selected)
-      // this.postsBySpaceId()
-      // this.schedulesBySpaceId()
+      this.postsBySpaceId(id)
     },
 
-    async createTeamSpace() {
-      const TOKEN = localStorage.getItem('accessToken')
-      const email = jwtDecode(TOKEN).sub;
-      try {
-        let members = this.selected
-          .filter(obj => obj.email !== email)
-          .map(obj => {
-            return {
-              memberEmail: obj.email,
-              spaceRole: "CREW"
-            }
-          })
-
-        members = [...members, {memberEmail: email, spaceRole: "CAPTAIN"}]
-        const postData = {
-          "spaceName" : this.spaceName,
-          "description": this.description,
-          "spaceThumbNailPath" : "https://picsum.photos/2",
-          "spaceMembers": members
-        }
-
-        try {
-           await axiosInstance.post(`${BASE_URL}/space/create/team`, postData);
-        } catch (e) {
-          console.log(e + "스페이스 생성 실패");
-        }
-
-        try {
-          const response = await axiosInstance.get(`${BASE_URL}/space/my`);
-          this.mySpaceList = response.data.result
-        } catch (e) {
-          console.log(e + "모든 스페이스 가져오기 실패");
-        }
-
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
   },
-  components: { SpaceList, AppSidebar},
+  components: {PostList, SpaceList, AppSidebar},
   created() {
     this.loadMySpacesByEmail();
   },
+  updated() {
+    this.loadMySpacesByEmail();
+    this.viewMembersTable = false
+  }
 }
 </script>
 
@@ -139,7 +112,7 @@ export default {
   <q-dialog v-model="dialog">
     <q-card>
       <q-card-section>
-        <q-input outlined v-model="spaceName" label="팀 스페이스 제목" />
+        <q-input outlined v-model="spaceName" :label="`${SpaceType} 스페이스 이름`" />
         <q-input outlined v-model="description" label="간단한 설명" />
       </q-card-section>
       <q-card-actions>
@@ -151,6 +124,12 @@ export default {
 
   <q-page class="sj-container">
     <div class="sj-content">
+
+      <SpaceList
+        :mySpaceList="mySpaceList"
+        @getClickedSpaceId="getMembersPostsSchedule($event)"
+        @GoToCreate=" $router.push(`/SpaceCreate/${SpaceType}`)"
+      />
 
       <q-table
         v-if="viewMembersTable"
@@ -166,13 +145,12 @@ export default {
         <template v-slot:body-selection="scope">
           <q-toggle v-model="scope.selected"/>
         </template>
-
       </q-table>
 
-      <SpaceList
-        :mySpaceList="mySpaceList"
-        @getClickedSpaceId="getMembersPostsSchedule($event)"
-        @createTeamSpace=" dialog=true"
+      <PostList
+        class="postList__css"
+        :postDatas="getPostsBySpaceId"
+        @PostDtailOpen = "goToPostDetail($event)"
       />
 
 
