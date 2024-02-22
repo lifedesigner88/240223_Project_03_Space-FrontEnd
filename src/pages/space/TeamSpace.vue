@@ -2,7 +2,6 @@
 import AppSidebar from "components/layout/AppSidebar.vue";
 import {columns, rows} from "assets/data/SpaceTableData/forInviteMembers";
 import {ref} from "vue";
-import axios from "axios";
 import SpaceList from "pages/space/cardList/SpaceList.vue";
 import {jwtDecode} from "jwt-decode";
 import {axiosInstance} from "boot/axios";
@@ -38,9 +37,9 @@ export default {
 
   name: "GroupSpace",
   methods: {
-    async loadALLSpacesByEmail() {
+    async loadMySpacesByEmail() {
       try {
-        const response = await axiosInstance.get(`${BASE_URL}/space/spaces`);
+        const response = await axiosInstance.get(`${BASE_URL}/space/my`);
         this.mySpaceList = response.data.result
       } catch (e) {
         console.log(e + "모든 스페이스 가져오기 실패");
@@ -90,7 +89,7 @@ export default {
     },
 
     async createTeamSpace() {
-
+      const TOKEN = localStorage.getItem('accessToken')
       const email = jwtDecode(TOKEN).sub;
       try {
         let members = this.selected
@@ -117,7 +116,7 @@ export default {
         }
 
         try {
-          const response = await axiosInstance.get(`${BASE_URL}/space/spaces`);
+          const response = await axiosInstance.get(`${BASE_URL}/space/my`);
           this.mySpaceList = response.data.result
         } catch (e) {
           console.log(e + "모든 스페이스 가져오기 실패");
@@ -129,9 +128,9 @@ export default {
     }
 
   },
-  components: {SpaceList, AppSidebar},
+  components: { SpaceList, AppSidebar},
   created() {
-    this.loadALLSpacesByEmail();
+    this.loadMySpacesByEmail();
   },
 }
 </script>

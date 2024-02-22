@@ -1,8 +1,26 @@
 <script>
 export default {
-  name: "SpaceList",
+  name: "MySpaceList",
   props: {
     mySpaceList: {},
+  },
+  data() {
+    return {
+      selectedTitle: 'Clicked Space',
+      selectedSpaceId: 0,
+    }
+  },
+  methods: {
+    cardClicked(data) {
+      this.$emit('getClickedSpaceId',data.spaceId);
+      this.selectedTitle=data.spaceName;
+      this.selectedSpaceId=data.spaceId;
+    },
+    reset(){
+      this.selectedTitle="Select Cancled";
+      this.$emit('getClickedSpaceId',0);
+      this.selectedSpaceId=0;
+    }
   }
 }
 </script>
@@ -10,14 +28,14 @@ export default {
 <template>
   <div class="spacebox">
     <div class="spaceCard sj-center"
-         @click="$emit('createTeamSpace')">
-      <div class="spaceCard__create"> Creat TEAM SPACE</div>
+         @click="reset">
+      <div class="spaceCard__create"> Will Post:<br>{{ selectedTitle }}</div>
     </div>
 
 
     <div class="spaceCard"
          v-for="(data, i) in mySpaceList" :key="i"
-         @click="$emit('getClickedSpaceId',data.spaceId)">
+         @click="cardClicked(data)">
       <div class="spaceCard__roundbox type_my" v-if="data.spaceType === 'MY'">{{ data.spaceType }}</div>
       <div class="spaceCard__roundbox type_team" v-if="data.spaceType === 'TEAM'">{{ data.spaceType }}</div>
       <div class="spaceCard__roundbox type_group" v-if="data.spaceType === 'GROUP'">{{ data.spaceType }}</div>
@@ -69,12 +87,15 @@ export default {
     padding: 5px 12px 5px 15px;
     font-size: 13px;
   }
+
   .type_my {
     background: linear-gradient(0deg, rgb(255, 0, 0), rgba(255, 0, 0, 0));
   }
+
   .type_team {
     background: linear-gradient(0deg, rgb(0, 20, 255), rgba(255, 0, 0, 0));
   }
+
   .type_group {
     background: linear-gradient(0deg, rgb(35, 194, 0), rgba(255, 0, 0, 0));
   }
@@ -104,6 +125,7 @@ export default {
   color: rgba(255, 255, 255, 0.47);
   font-size: 20px;
 }
+
 .spaceCard__create {
   font-size: 25px;
   color: white;

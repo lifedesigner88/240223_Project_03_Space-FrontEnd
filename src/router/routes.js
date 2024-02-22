@@ -58,8 +58,10 @@ const routes = [
     component: ()=> import('pages/post/PostList.vue')
   },
   {
-    path: '/PostDetail',
-    component: ()=> import('pages/post/PostDetail.vue')
+    path: '/PostDetail/:postId',
+    name:'PostDetail',
+    component: () => import('pages/post/PostDetail.vue'),
+    props: true
   },
 
 ]
