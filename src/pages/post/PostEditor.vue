@@ -1,13 +1,26 @@
 <template>
   <div class="q-pa-md q-gutter-sm">
-    <q-select outlined v-model="spaceId" :options="spaceIDOptions" 
-      label="spaceId"
-      emit-value
-      map-options
-      dense
-      style="width: 150px; font-size: 10px; margin-bottom: 1rem;"
-      bg-color="white"
-    />
+    <q-row justify="space-between">
+      <q-col>
+        <q-select outlined v-model="spaceId" :options="spaceIDOptions" 
+          label="spaceId"
+          emit-value
+          map-options
+          dense
+          style="width: 150px; font-size: 10px; margin-bottom: 1rem;"
+          bg-color="white"
+        />
+        <q-select outlined v-model="status" :options="postStatusOptions" 
+          label="status"
+          emit-value
+          map-options
+          dense
+          style="width: 150px; font-size: 10px; margin-bottom: 1rem;"
+          bg-color="white"
+        />
+      </q-col>
+    </q-row>
+ 
     <!-- 제목 입력란 -->
     <q-input outlined v-model="title" label="제목" bg-color="white" min-height="5rem" style="margin-bottom: 0rem;" />
     <!-- 본문 작성 에디터 -->
@@ -105,8 +118,8 @@ export default {
   setup() {
     const title = ref('');
     const contents = ref('');
-    const spaceId = ref('2');
-    const postStatus= ref('OPEN');
+    const spaceId = ref('1');
+    // const postStatus= ref('OPEN');
     
     // spaceIDOptions 더미 데이터 정의
     const spaceIDOptions = [
@@ -114,11 +127,18 @@ export default {
       { label: 'Option 2', value: '2' },
       // 여러 옵션들을 추가할 수 있습니다.
     ];
+    const postStatusOptions = [
+      { label: 'OPEN', value: 'OPEN' },
+      { label: 'SECRET', value: 'SECRET' },
+    ];
 
     return {
       title,
       contents,
-      spaceId,
+      spaceId: null,
+      spaceIDOptions: [ /* Your spaceID options array */ ],
+      status: null,
+      postStatusOptions: [ /* Your postStatus options array */ ],
     };
   },
   methods:{
@@ -129,9 +149,9 @@ export default {
                 registerData.append("title", this.title)
                 registerData.append("contents", this.contents)
                 registerData.append("spaceId", this.spaceId)
-                registerData.append("postStatus", this.postStatus)
-                // const token = localStorage.getItem('token');
-                const headers= {Authorization: `eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0dHViaUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcwODQ1NTQ2NiwiZXhwIjoxNzA4NDU3MjY2fQ.nJwAwGfyonncV-_nXrgFwYq8XH4dnpJscAXFMpuy5Fc`};
+                // registerData.append("postStatus", this.postStatus)
+                const token = localStorage.getItem('accessToken');
+                const headers= token ? {Authorization: `Bearer ${token}`} : {};
                 // await axios.post(`${process.env.VUE_APP_BASE_URL}/item/create`, registerData, {headers});
                 const response = await axios.post(`http://localhost:8080/api/post/create`, registerData, {headers});
                 console.log(response.data);
