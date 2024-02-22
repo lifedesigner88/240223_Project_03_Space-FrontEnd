@@ -5,10 +5,8 @@ import {ref} from "vue";
 import axios from "axios";
 import SpaceList from "pages/space/cardList/SpaceList.vue";
 import {jwtDecode} from "jwt-decode";
+import {axiosInstance} from "boot/axios";
 
-// const TOKEN = localStorage.getItem("token");
-const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWZlQGdhbWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzA4NDE0NDAxLCJleHAiOjE3MDg1OTQ0MDF9.J0Fz3MyjEapdIE6KjHvztF_tt9p8GDqGeiEjOC3w-aY";
-const headers = TOKEN ? {Authorization: `Bearer ${TOKEN}`} : {};
 const BASE_URL = "http://localhost:8080"
 
 
@@ -42,7 +40,7 @@ export default {
   methods: {
     async loadALLSpacesByEmail() {
       try {
-        const response = await axios.get(`${BASE_URL}/space/spaces`, {headers});
+        const response = await axiosInstance.get(`${BASE_URL}/space/spaces`);
         this.mySpaceList = response.data.result
       } catch (e) {
         console.log(e + "모든 스페이스 가져오기 실패");
@@ -51,7 +49,7 @@ export default {
 
     async membersBySpaceId(id) {
       try {
-        const response = await axios.get(`${BASE_URL}/space/${id}/members`, {headers});
+        const response = await axiosInstance.get(`${BASE_URL}/space/${id}/members`);
         this.getMembersBySpaceId = response.data.result
         this.rows = this.getMembersBySpaceId
       } catch (e) {
@@ -62,7 +60,7 @@ export default {
 
     async postsBySpaceId() {
       try {
-        const response = await axios.get(`${BASE_URL}/space/${clickedSpaceId}/posts`, {headers});
+        const response = await axiosInstance.get(`${BASE_URL}/space/${clickedSpaceId}/posts`);
         this.getPostsBySpaceId = response.data.result
         console.log(this.mySpaceList)
         console.log("end")
@@ -74,7 +72,7 @@ export default {
 
     async schedulesBySpaceId() {
       try {
-        const response = await axios.get(`${BASE_URL}/space/${clickedSpaceId}/schedules`, {headers});
+        const response = await axiosInstance.get(`${BASE_URL}/space/${clickedSpaceId}/schedules`);
         this.getSpacesBySpaceId = response.data.result
         console.log(this.mySpaceList)
       } catch (e) {
@@ -113,14 +111,13 @@ export default {
         }
 
         try {
-          const response = await axios.post(`${BASE_URL}/space/create/team`, postData, {headers});
-          // window.location.reload();
+           await axiosInstance.post(`${BASE_URL}/space/create/team`, postData);
         } catch (e) {
-          console.log(e);
+          console.log(e + "스페이스 생성 실패");
         }
 
         try {
-          const response = await axios.get(`${BASE_URL}/space/spaces`, {headers});
+          const response = await axiosInstance.get(`${BASE_URL}/space/spaces`);
           this.mySpaceList = response.data.result
         } catch (e) {
           console.log(e + "모든 스페이스 가져오기 실패");
@@ -130,7 +127,6 @@ export default {
         console.log(e)
       }
     }
-
 
   },
   components: {SpaceList, AppSidebar},
@@ -153,6 +149,7 @@ export default {
       </q-card-actions>
     </q-card>
   </q-dialog>
+
   <q-page class="sj-container">
     <div class="sj-content">
 

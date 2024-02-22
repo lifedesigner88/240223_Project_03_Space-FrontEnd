@@ -1,176 +1,158 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
-    <q-row justify="space-between">
-      <q-col>
-        <q-select outlined v-model="spaceId" :options="spaceIDOptions" 
-          label="spaceId"
-          emit-value
-          map-options
-          dense
-          style="width: 150px; font-size: 10px; margin-bottom: 1rem;"
-          bg-color="white"
-        />
-        <q-select outlined v-model="status" :options="postStatusOptions" 
-          label="status"
-          emit-value
-          map-options
-          dense
-          style="width: 150px; font-size: 10px; margin-bottom: 1rem;"
-          bg-color="white"
-        />
-      </q-col>
-    </q-row>
- 
-    <!-- 제목 입력란 -->
-    <q-input outlined v-model="title" label="제목" bg-color="white" min-height="5rem" style="margin-bottom: 0rem;" />
-    <!-- 본문 작성 에디터 -->
-    <q-editor 
-    v-model="contents" min-height="15rem"
-    :dense="$q.screen.lt.md" 
-    :toolbar="[
-      [
-        {
-          label: $q.lang.editor.align,
-          icon: $q.iconSet.editor.align,
-          fixedLabel: true,
-          options: ['left', 'center', 'right', 'justify']
-        }
-      ],
-      ['bold', 'italic', 'strike', 'underline'],
-      
-      [
-        {
-          label: $q.lang.editor.formatting,
-          icon: $q.iconSet.editor.formatting,
-          list: 'no-icons',
-          options: [
-            'p',
-            'h1',
-            'h2',
-            'h3',
-            'h4',
-            'h5',
-            'h6',
-            'code'
-          ]
-        },
-        {
-          label: $q.lang.editor.fontSize,
-          icon: $q.iconSet.editor.fontSize,
-          fixedLabel: true,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'size-1',
-            'size-2',
-            'size-3',
-            'size-4',
-            'size-5',
-            'size-6',
-            'size-7'
-          ]
-        },
-        {
-          label: $q.lang.editor.defaultFont,
-          icon: $q.iconSet.editor.font,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'default_font',
-            'arial',
-            'arial_black',
-            'comic_sans',
-            'courier_new',
-            'impact',
-            'lucida_grande',
-            'times_new_roman',
-            'verdana'
-          ]
-        },
-        'removeFormat'
-      ],
-      ['undo', 'redo'],
-      ['fullscreen','viewsource']
-    ]"
-    :fonts="{
-      arial: 'Arial',
-      arial_black: 'Arial Black',
-      comic_sans: 'Comic Sans MS',
-      courier_new: 'Courier New',
-      impact: 'Impact',
-      lucida_grande: 'Lucida Grande',
-      times_new_roman: 'Times New Roman',
-      verdana: 'Verdana'
-    }"
-    
-  />
+  <q-page class="post-editor row container">
+    <AppSidebar></AppSidebar>
 
-    <q-btn color="primary" @click="writePost">글쓰기</q-btn>
-  </div>
+    <q-item-section class="text-center">
+
+      <div class="q-pa-md q-gutter-sm ">
+        <form
+          @submit.prevent="submitPost"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="off"
+          spellcheck="false"
+        >
+          <q-card class="q-my-lg q-ma-sm row">
+            <q-input placeholder="제목을 입력하세요."  class="col-10" standout v-model=title  required ></q-input>
+            <q-btn class="col-2 bg-orange text-white" type="submit" > 글쓰기 </q-btn>
+          </q-card>
+
+          <q-editor
+            class="q-ma-sm"
+            ref="editorRef"
+            :definitions="definitions"
+            :toolbar="[['left','center','right','justify'],['bold','italic','underline','strike'],['undo','redo'],['insert_img']]"
+            v-model="editor"
+          />
+        </form>
+      </div>
+        <p class="q-pa-md q-ma-lg text-white"> 화면을 미리 확인하세요 </p>
+        <q-card flat bordered class="q-pa-md q-ma-lg">
+          <div v-html="renderedHtml"></div>
+        </q-card>
+    </q-item-section>
+
+  </q-page>
+
 </template>
 
 <script>
-import { ref } from 'vue';
-import axios from "axios";
+
+import AppSidebar from "components/layout/AppSidebar.vue";
+import {axiosInstance} from "boot/axios";
+
+const BASE_URL = "http://localhost:8080"
 
 export default {
-  
-  setup() {
-    const title = ref('');
-    const contents = ref('');
-    const spaceId = ref('1');
-    // const postStatus= ref('OPEN');
-    
-    // spaceIDOptions 더미 데이터 정의
-    const spaceIDOptions = [
-      { label: 'Option 1', value: '1' },
-      { label: 'Option 2', value: '2' },
-      // 여러 옵션들을 추가할 수 있습니다.
-    ];
-    const postStatusOptions = [
-      { label: 'OPEN', value: 'OPEN' },
-      { label: 'SECRET', value: 'SECRET' },
-    ];
-
+  components: {AppSidebar},
+  data (){
     return {
-      title,
-      contents,
-      spaceId: null,
-      spaceIDOptions: [ /* Your spaceID options array */ ],
-      status: null,
-      postStatusOptions: [ /* Your postStatus options array */ ],
-    };
+      title:'',
+      editor: '',
+      definitions :{
+        insert_img :{
+          tip: '사진첨부',
+          icon: 'photo',
+          handler: this.insertImg
+        }
+      }
+    }
+  },
+  computed: {
+    renderedHtml() {
+      return this.editor;
+    }
   },
   methods:{
-        async writePost(){
-            try{                              
-                confirm("등록하시겠습니까")
-                const registerData = new FormData();
-                registerData.append("title", this.title)
-                registerData.append("contents", this.contents)
-                registerData.append("spaceId", this.spaceId)
-                // registerData.append("postStatus", this.postStatus)
-                const token = localStorage.getItem('accessToken');
-                const headers= token ? {Authorization: `Bearer ${token}`} : {};
-                // await axios.post(`${process.env.VUE_APP_BASE_URL}/item/create`, registerData, {headers});
-                const response = await axios.post(`http://localhost:8080/api/post/create`, registerData, {headers});
-                console.log(response.data);
-                // location.href="/login"
-                // this.$router.push(
-                //     {name:'Login'}
-                // )
-            } catch(error){
-                const error_message= error.response?.data.error_message;
-                if(error_message){
-                    console.log(error_message);
-                    console.log(error);
-                    alert(error_message);
-                } else {
-                    console.log(error);
-                    alert("입력 값 확인 필요")
-                }
-            }
+    insertImg(){
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.png, .jgp'
+      let file
+      input.onchange= _ =>{
+        const files = Array.from(input.files)
+        file = files[0]
+
+        const reader = new FileReader()
+        reader.onloadend = () =>{
+          const blob = this.base64ToBlob(reader.result);
+          const url = URL.createObjectURL(blob);
+
+          this.editor += `<div><img style="max-width: 100%;" src="${url}" alt=""/></div>`
         }
+        reader.readAsDataURL(file)
+      }
+      input.click()
     }
+    ,
+    async fetchBlobFromUrl(url) {
+      try {
+        const response = await fetch(url); // URL에서 데이터를 가져옴
+        return await response.blob(); // Blob 반환
+      } catch (error) {
+        console.error('Error fetching blob from URL:', error);
+        throw error; // 에러를 다시 던져서 호출하는 쪽에서 처리할 수 있도록 함
+      }
+    }
+    ,
+    base64ToBlob(base64Data) {
+      const byteString = atob(base64Data.split(',')[1]);
+      const mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0]; // 이미지의 MIME 유형을 가져옴
+
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([uint8Array], { type: mimeString });
+    }
+    ,
+    async submitPost() {
+      if (!this.title.trim() || !this.editor.trim()) {
+        alert('제목과 내용을 입력하세요.');
+        return;
+      }
+
+      if(confirm("작성하시겠습니까?")){
+        try {
+          const editors = this.editor
+          const formData = new FormData();
+          formData.append('title', this.title);
+          formData.append('contents', editors);
+          formData.append('spaceId',1);
+
+          // 이미지 파일 추가
+          const images = this.$refs.editorRef.$el.querySelectorAll("img");
+          console.log(images);
+          for (const image of images) {
+            const imageUrl = image.getAttribute('src');
+            const blob = await this.fetchBlobFromUrl(imageUrl);
+            // 단일 파일로 추가
+            formData.append('attachFileList', blob, 'image.jpg');
+          }
+          console.log([...formData.entries()]);
+
+          // Axios를 사용하여 서버로 데이터 전송
+          await axiosInstance.post(`${BASE_URL}/api/post/create`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          this.title = ''; // 제목 초기화
+          this.editor = ''; // 에디터 초기화
+          formData.delete('attachFileList');
+        } catch (error) {
+          console.error('Error submitting post:', error);
+        }
+      }
+    }
+  }
+
 };
 </script>
+
+<style scoped>
+
+</style>

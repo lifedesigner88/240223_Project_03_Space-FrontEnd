@@ -5,8 +5,7 @@ import {ref} from "vue";
 import axios from "axios";
 import SpaceList from "pages/space/cardList/SpaceList.vue";
 
-// const TOKEN = localStorage.getItem("token");
-const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWZlQGdhbWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzA4NDE0NDAxLCJleHAiOjE3MDg1OTQ0MDF9.J0Fz3MyjEapdIE6KjHvztF_tt9p8GDqGeiEjOC3w-aY";
+const TOKEN = localStorage.getItem("accessToken");
 const headers = TOKEN ? {Authorization: `Bearer ${TOKEN}`} : {};
 const BASE_URL = "http://localhost:8080"
 
@@ -52,8 +51,6 @@ export default {
 
 
 <template>
-
-
   <q-page class="sj-container">
     <div class="sj-content">
       <h1 class="hi">{{ clickedSpaceId }}</h1>
