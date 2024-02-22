@@ -155,6 +155,8 @@ export default {
           for (const image of images) {
             const imageUrl = image.getAttribute('src');
             const blob = await this.fetchBlobFromUrl(imageUrl);
+            console.log(blob);
+            
             // 단일 파일로 추가
             formData.append('attachFileList', blob, 'image.jpg');
           }
