@@ -138,20 +138,12 @@
               <!--              여기서 채팅방 조회 -->
               <q-scroll-area style="height: calc(100% - 100px)">
                 <q-list>
-<!--                  <q-item-->
-<!--                    v-for="chatRoom in chatRoomList"-->
-<!--                    :key="chatRoom.id"-->
-<!--                    clickable-->
-<!--                    v-ripple-->
-<!--                    @click="selectedChatRoomId=chatRoom.id"-->
-<!--                  >-->
-
                   <q-item
                     v-for="chatRoom in chatRoomList"
                     :key="chatRoom.id"
                     clickable
                     v-ripple
-                    @click="enterChatRoom(chatRoom)"
+                    @click="chatRoomInfo(chatRoom)"
                   >
                     <q-item-section avatar>
                       <q-avatar>
@@ -174,7 +166,7 @@
 
 <!--            채팅방으로 넘어가는 부분-->
             <q-page-container class="bg-grey-2">
-              <ChatListPage :chatRoomId="selectedChatRoomId"></ChatListPage>
+              <ChatListPage :chatRoomId="selectedChatRoomId" :stomp-client="stompClient"></ChatListPage>
             </q-page-container>
 
             <q-footer>
@@ -182,7 +174,7 @@
                 <q-btn round flat icon="insert_emoticon" class="q-mr-sm"/>
                 <q-input rounded outlined dense class="WAL__field col-grow q-mr-sm" bg-color="white" v-model="message"
                          placeholder="Type a message"/>
-                <q-btn round flat @click="sendMessage" icon="mic"/>
+                <q-btn round flat icon="mic"/>
               </q-toolbar>
             </q-footer>
           </q-layout>
@@ -234,9 +226,11 @@ export default {
       height: $q.screen.height + 'px'
     }));
     const roomName = ref('');
+
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
     }
+
     async function createRoom() {
       console.log(roomName.value);
       if (roomName.value) {
@@ -256,6 +250,7 @@ export default {
         console.log("Please enter the room name.");
       }
     }
+
     return {
       leftDrawerOpen,
       search,
@@ -266,9 +261,12 @@ export default {
       createRoom,
     }
   },
+
   created() {
+    this.initializeWebSocket();
     this.loadChatRooms();
   },
+
   mounted() {
     window.addEventListener('scroll', this.scrollPagination);
     this.initializeWebSocket();
@@ -281,6 +279,11 @@ export default {
     });
   },
   methods: {
+    initializeWebSocket() {
+      const socket = new SockJS('http://localhost:8080/ws'); // 백엔드 WebSocket 엔드포인트 URL
+      this.stompClient = Stomp.over(socket);
+    },
+
     async loadChatRooms() {
       this.isLoading = true;
       try {
@@ -292,33 +295,35 @@ export default {
       this.isLoading = false;
     },
 
-    initializeWebSocket() {
-      const socket = new SockJS('http://localhost:8080/ws'); // 백엔드 WebSocket 엔드포인트 URL
-      this.stompClient = Stomp.over(socket);
-      this.stompClient.connect({}, (frame) => {
-        console.log('WebSocket 연결됨');
-        this.stompClient.subscribe('/sub/chat/send', (response) => {
-          console.log('받은 메시지:', response.body);
-          // 여기에 새로운 메시지를 수신했을 때 실행되는 작업을 추가하세요.
-        });
-      }, (error) => {
-        console.error('WebSocket 연결 오류:', error);
-      });
+    async chatRoomInfo(room) {
+      try {
+
+        this.selectedChatRoomId = room.id;
+        const response = await axiosInstance.get('http://localhost:8080/chat/room/enter/' + this.selectedChatRoomId);
+        this.loginUserNickName = response.data.message;
+
+        if (this.stompClient && this.stompClient.connected) {
+          this.stompClient.subscribe(`/user/${this.loginUserNickName}/sub/chat/enter/${this.selectedChatRoomId}`);
+          console.log(this.loginUserNickName + '님이 SUBSCRIBE!');
+        } else {
+          console.log('stompClient가 아직 준비되지 않았습니다.');
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
-    sendMessage() {
-      // 채팅 메시지를 전송하고 싶은 경우
-      this.stompClient.send('/pub/chat/send', {}, JSON.stringify({
-        // 채팅 메시지 내용
-        sender: this.loginUserNickName,
-        roomId: this.selectedChatRoomId,
-        message: 123123
-      }));
-      // 메시지를 보낸 후 필요한 작업 수행
-      this.message = '';
-    }
 
-
-
+    // sendMessage() {
+    //   // 채팅 메시지를 전송하고 싶은 경우
+    //   this.stompClient.send('/pub/chat/send', {}, JSON.stringify({
+    //     // 채팅 메시지 내용
+    //     sender: this.loginUserNickName,
+    //     roomId: this.selectedChatRoomId,
+    //     message: 123123
+    //   }));
+    //   // 메시지를 보낸 후 필요한 작업 수행
+    //   this.message = '';
+    // }
   },
 
   scrollPagination() {
