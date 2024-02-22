@@ -6,7 +6,7 @@
     <q-item-section>
       <div class="text-center">
 
-        <div class="WAL position-relative bg-grey-4 size" :style="style">
+        <div class="WAL position-relative size" :style="style">
           <q-layout view="lHh Lpr lFf" class="WAL__layout shadow-3" container>
             <q-header elevated>
               <q-toolbar class="bg-grey-3 text-black">
@@ -74,7 +74,7 @@
 
                 <q-space/>
 
-                <!--                전송버튼은 여기야!-->
+                <!-- 전송버튼은 여기야!-->
                 <q-btn round flat icon="message" @click="prompt = true"/>
                 <q-dialog v-model="prompt" persistent>
                   <q-card style="min-width: 350px">
@@ -135,7 +135,7 @@
                 </q-input>
               </q-toolbar>
 
-              <!--              여기서 채팅방 조회 -->
+              <!-- 여기서 채팅방 조회 -->
               <q-scroll-area style="height: calc(100% - 100px)">
                 <q-list>
                   <q-item
@@ -164,7 +164,7 @@
               </q-scroll-area>
             </q-drawer>
 
-<!--            채팅방으로 넘어가는 부분-->
+            <!-- 채팅방으로 넘어가는 부분 -->
             <q-page-container class="bg-grey-2">
               <ChatListPage :chatRoomId="selectedChatRoomId" :stomp-client="stompClient"></ChatListPage>
             </q-page-container>
@@ -307,10 +307,9 @@ export default {
 
 <style lang="sass">
 
-
 .WAL
   width: 100%
-  height: 50%
+  height: 100%
   padding-top: 20px
   padding-bottom: 20px
 

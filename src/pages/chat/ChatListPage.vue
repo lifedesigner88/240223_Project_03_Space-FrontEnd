@@ -80,9 +80,25 @@ export default {
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect({}, (frame) => {
         console.log('WebSocket 연결됨');
-        this.stompClient.subscribe('/sub/chat/send/'+this.chatRoomId, (response) => {
+        this.stompClient.subscribe('/sub/chat/send/' + this.chatRoomId, (response) => {
           console.log('받은 메시지:', response.body);
-          // 여기에 새로운 메시지를 수신했을 때 실행되는 작업을 추가하세요.
+          // const receivedMessage = JSON.parse(response.body);
+          // const messageData = {
+          //   sender: receivedMessage.loginUser,
+          //   roomId: receivedMessage.chatRoomId,
+          //   message: receivedMessage.message
+          // }
+
+          const receivedMessage = {
+            sender: response.body.sender, // 다른 정보 채널에서 실제 sender 값을 가져옵니다.
+            message: response.body.message
+          };
+
+          console.log("sender!!!" + receivedMessage.sender);
+          console.log("message!!!" + receivedMessage.message);
+
+          // 받은 메시지를 채팅목록에 추가
+          this.chatMessage.chatList.push(receivedMessage);
         });
       }, (error) => {
         console.error('WebSocket 연결 오류:', error);
@@ -101,10 +117,11 @@ export default {
       }
       console.log("Sending Data: ", messageData);
 
-
       this.stompClient.send('/pub/chat/send/'+this.chatRoomId, {}, JSON.stringify(messageData));
 
-      // 메시지를 보낸 후 필요한 작업 수행
+      // 대화 목록에 메시지를 추가
+      this.chatMessage.chatList.push(messageData);
+
       this.message = '';
     },
 
@@ -136,6 +153,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 
 </style>
