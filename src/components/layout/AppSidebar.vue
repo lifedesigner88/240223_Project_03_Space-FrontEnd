@@ -12,37 +12,45 @@
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/MySpace')"
+               @click="this.$router.push('/PostEditor')"
+        > Posting</q-btn>
+      </p>
+
+      <p>
+        <q-btn class="mr-2"
+               @mouseenter="handleHover"
+               @mouseleave="handleLeave"
+               @click="this.$router.push('/MySpace/MY')"
         > My SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/TeamSpace')"
+               @click="this.$router.push('/TeamSpace/TEAM')"
         > Team SPACE</q-btn>
       </p>
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
                @mouseleave="handleLeave"
-               @click="this.$router.push('/GroupSpace')"
+               @click="this.$router.push('/GroupSpace/GROUP')"
         > Group SPACE</q-btn>
       </p>
-      <p>
-        <q-btn class="mr-2"
-               @mouseenter="handleHover"
-               @mouseleave="handleLeave"
-               @click="this.$router.push('/Kanban')"
-        > Kanban</q-btn>
-      </p>
-      <p>
-        <q-btn class="mr-2"
-               @mouseenter="handleHover"
-               @mouseleave="handleLeave"
-               @click="this.$router.push('/Calendar')"
-        > Calendar</q-btn>
-      </p>
+<!--      <p>-->
+<!--        <q-btn class="mr-2"-->
+<!--               @mouseenter="handleHover"-->
+<!--               @mouseleave="handleLeave"-->
+<!--               @click="this.$router.push('/Kanban')"-->
+<!--        > Kanban</q-btn>-->
+<!--      </p>-->
+<!--      <p>-->
+<!--        <q-btn class="mr-2"-->
+<!--               @mouseenter="handleHover"-->
+<!--               @mouseleave="handleLeave"-->
+<!--               @click="this.$router.push('/Calendar')"-->
+<!--        > Calendar</q-btn>-->
+<!--      </p>-->
       <p>
         <q-btn class="mr-2"
                @mouseenter="handleHover"
@@ -80,5 +88,8 @@ export default {
 <style lang="scss" scoped>
   .hovered {
     color: orange /* 호버 시 텍스트 색상 변경 */
+  }
+  .mr-2{
+    font-size: 30px;
   }
 </style>
