@@ -1,3 +1,14 @@
+<style>
+.forfont__size {
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  height: 45vh;
+
+}
+</style>
 <template>
   <q-header class="top-navbar row justify-between q-ma-auto">
     <div class="text-white q-mx-lg q-my-auto">
