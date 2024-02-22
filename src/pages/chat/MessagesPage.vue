@@ -182,7 +182,7 @@
                 <q-btn round flat icon="insert_emoticon" class="q-mr-sm"/>
                 <q-input rounded outlined dense class="WAL__field col-grow q-mr-sm" bg-color="white" v-model="message"
                          placeholder="Type a message"/>
-                <q-btn round flat icon="mic"/>
+                <q-btn round flat @click="sendMessage" icon="mic"/>
               </q-toolbar>
             </q-footer>
           </q-layout>
@@ -193,13 +193,14 @@
   </q-page>
 </template>
 
+
 <script>
 import AppSidebar from "components/layout/AppSidebar.vue";
 import { useQuasar } from 'quasar';
 import { ref, computed } from 'vue';
 import { axiosInstance } from "boot/axios";
 import ChatListPage from "pages/chat/ChatListPage.vue";
-import { Client } from '@stomp/stompjs';
+import {Stomp} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BackURL } from "src/services/authService";
 
@@ -216,11 +217,13 @@ export default {
       isLastPage: false,
       isLoading: false,
       selectedChatRoomId: null,
-      stompClient: null,
       loginUserNickName: null,
       chatData: '',
+      testWhoSubscribed: [],
 
-      testWhoSubscribed: []
+      message: '',
+      messages: [],
+      stompClient: null
     }
   },
   setup() {
@@ -257,7 +260,6 @@ export default {
     return {
       leftDrawerOpen,
       search,
-      message,
       style,
       roomName,
       prompt: ref(false),
@@ -267,87 +269,19 @@ export default {
   },
   created() {
     this.loadChatRooms();
-    this.connect();
   },
-  beforeUnmount() {
-    if (this.stompClient) {
-      this.stompClient.deactivate();
-    }
+  mounted() {
+    window.addEventListener('scroll', this.scrollPagination);
+    this.initializeWebSocket();
+    this.stompClient.connect({}, () => {
+      // 특정 토픽 구독
+      this.stompClient.subscribe('/sub/chat/send', (response) => {
+        console.log('Received message:', response.body);
+        // 메시지를 받았을 때 실행할 작업 추가
+      });
+    });
   },
   methods: {
-
-    connect() {
-      // 인증 토큰 얻기
-      let authToken = localStorage.getItem('accessToken');  // 인증 토큰을 얻는 방법은 API나 라이브러리에 따라 달라집니다.
-
-      const socket = new SockJS('http://localhost:8080/ws', [], {
-        headers: { 'Authorization': 'Bearer ' + authToken }  // 토큰을 헤더에 추가
-      });
-
-      socket.onopen = function() {
-        console.log('WebSocket 연결이 열렸습니다.');
-      };
-
-      socket.onmessage = function(event) {
-        console.log('서버로부터 메시지를 수신했습니다:', event.data);
-      };
-
-      socket.onerror = function(error) {
-        console.error('WebSocket 오류 발생:', error);
-      };
-
-      socket.onclose = function(event) {
-        if (event.wasClean) {
-          console.log('WebSocket 연결이 정상적으로 닫혔습니다.');
-        } else {
-          console.error('WebSocket 연결이 끊겼습니다.'); // 예기치 않은 종료
-        }
-        console.log('코드:', event.code, '이유:', event.reason);
-      };
-
-      this.stompClient = new Client({
-        webSocketFactory: () => socket,
-        debug: (str) => console.log(str),
-      });
-
-      this.stompClient.activate();
-    },
-
-    async enterChatRoom(room) {
-      try {
-
-        this.selectedChatRoomId = room.id;
-        const response = await axiosInstance.get('http://localhost:8080/chat/room/enter/' + this.selectedChatRoomId);
-        this.loginUserNickName = response.data.message;
-
-        if (this.stompClient && this.stompClient.connected) {
-          this.stompClient.subscribe(`/user/${this.loginUserNickName}/sub/chat/enter/${this.selectedChatRoomId}`, this.handleMessage);
-          console.log(this.loginUserNickName + '님이 SUBSCRIBE!');
-        } else {
-          console.log('stompClient가 아직 준비되지 않았습니다.');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    handleMessage(message) {
-      let messageBody = JSON.parse(message.body);
-      console.log('Received message:', messageBody);
-    },
-
-
-    sendMessage() {
-      if (!this.stompClient || !this.stompClient.connected) {
-        console.error('WebSocket is not connected');
-        return;
-      }
-      this.chatData = {"roomId": this.chatRoomList.roomId, "sender": this.loginUserNickName,"message": this.message}
-      this.stompClient.send('/chat/send', {}, this.chatData);
-      console.log('Message sent:', this.chatData);
-      this.message = ''; // Clear the input field after sending the message
-    },
-
     async loadChatRooms() {
       this.isLoading = true;
       try {
@@ -359,28 +293,41 @@ export default {
       this.isLoading = false;
     },
 
+    initializeWebSocket() {
+      const socket = new SockJS('http://localhost:8080/ws'); // 백엔드 WebSocket 엔드포인트 URL
+      this.stompClient = Stomp.over(socket);
+      this.stompClient.connect({}, (frame) => {
+        console.log('WebSocket 연결됨');
+        this.stompClient.subscribe('/sub/chat/send', (response) => {
+          console.log('받은 메시지:', response.body);
+          // 여기에 새로운 메시지를 수신했을 때 실행되는 작업을 추가하세요.
+        });
+      }, (error) => {
+        console.error('WebSocket 연결 오류:', error);
+      });
+    },
+    sendMessage() {
+      // 채팅 메시지를 전송하고 싶은 경우
+      this.stompClient.send('/pub/chat/send', {}, JSON.stringify({
+        // 채팅 메시지 내용
+        sender: this.loginUserNickName,
+        roomId: this.selectedChatRoomId,
+        message: 123123
+      }));
+      // 메시지를 보낸 후 필요한 작업 수행
+      this.message = '';
+    }
+
+
 
   },
-  mounted() {
-    window.addEventListener('scroll', this.scrollPagination);
-  },
+
   scrollPagination() {
     const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
     if (nearBottom && !this.isLastPage && !this.isLoading) {
       this.currentPage++;
       this.loadChatRooms();
     }
-  },
-
-  selectChatRoom(id) {
-    this.$router.push({ name: 'ChatRoom', params });
-  },
-
-  searchChatRooms() {
-    this.chatRoomList = [];
-    this.currentPage = 0;
-    this.isLastPage = false;
-    this.loadChatRooms();
   },
 
 
