@@ -79,6 +79,7 @@ const routes = [
     props: true
   },
 
+
 ]
 
 export default routes

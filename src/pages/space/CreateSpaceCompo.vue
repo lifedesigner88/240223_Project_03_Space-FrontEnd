@@ -94,14 +94,14 @@ export default {
 
 <template>
   <q-dialog v-model="dialog">
-    <q-card>
-      <q-card-section>
-        <q-input outlined v-model="spaceName" label="팀 스페이스 제목"/>
-        <q-input outlined v-model="description" label="간단한 설명"/>
+    <q-card class="card-size">
+      <q-card-section class="input__size">
+        <q-input class="input__size" outlined v-model="spaceName" label="팀 스페이스 제목"/>
+        <q-input class="input__size" outlined v-model="description" label="간단한 설명"/>
       </q-card-section>
       <q-card-actions>
-        <q-btn flat label="Cancel" color="primary" v-close-popup/>
-        <q-btn flat label="Submit" color="primary" v-close-popup @click="createTeamSpace"/>
+        <q-btn flat class="button--size" label="Cancel" color="primary" v-close-popup/>
+        <q-btn flat class="button--size" label="Submit" color="primary" v-close-popup @click="createTeamSpace"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -117,6 +117,7 @@ export default {
 
       <q-table
         class="spaceTable"
+
         flat bordered
         title="맴버리스트"
         :rows="getAllMembers"
@@ -158,12 +159,26 @@ export default {
   align-items: start;
 }
 
-.spaceTable {
+.spaceTable{
   margin-top: 50px;
   width: 100%;
   background: none;
   color: orange;
 }
+.card-size {
+  width: 50vw;
+  background-color: #ffe5b6;
+  padding: 2vw;
+  border-radius: 20px;
 
+}
+.input__size {
+  font-size: 35px;
+  font-weight: bold;
+}
+.button--size{
 
+  font-size: 50px;
+
+}
 </style>
