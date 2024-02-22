@@ -11,11 +11,6 @@
           spellcheck="false"
           style=" width: 100%"
         >
-          <MySpaceList
-            :mySpaceList="mySpaceList"
-            @getClickedSpaceId="spaceId=$event"
-            style="padding: 40px 50px 50px 50px"
-          />
 
           <q-card class="q-my-lg q-ma-sm row">
             <q-input placeholder="제목을 입력하세요." class="col-10" standout v-model=title required></q-input>
