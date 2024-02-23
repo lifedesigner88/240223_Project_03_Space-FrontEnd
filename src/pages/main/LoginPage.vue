@@ -60,21 +60,5 @@ export default {
 </script>
 
 <style scoped>
-.for_text_size * {
-  font-size: 30px;
-  display: flex;
-  flex-direction: column;
-}
 
-
-.for_padding {
-  padding: 30px;
-}
-
-.back_box {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  height: 50vh;
-}
 </style>
