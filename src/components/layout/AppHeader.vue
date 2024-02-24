@@ -37,7 +37,7 @@
       <q-btn v-if="this.isLoggedIn" flat rounded class="bg-white text-black " label="Menu" >
         <q-menu>
 
-          <q-list>
+          <q-list class="forfont__size">
             <q-item
               clickable
               @click="this.$router.push('/MyPage')">

@@ -89,4 +89,7 @@ export default {
   .hovered {
     color: orange /* 호버 시 텍스트 색상 변경 */
   }
+  .mr-2{
+    font-size: 30px;
+  }
 </style>

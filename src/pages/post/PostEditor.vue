@@ -60,7 +60,6 @@ export default {
       editor: '',
       spaceId: 0,
       mySpaceList: {},
-      imgUrlList:[],
       definitions: {
         insert_img: {
           tip: '사진첨부',
@@ -99,7 +98,7 @@ export default {
         reader.onloadend = () => {
           const blob = this.base64ToBlob(reader.result);
           const url = URL.createObjectURL(blob);
-          this.imgUrlList.push(url);
+
           this.editor += `<div><img style="max-width: 100%;" src="${url}" alt=""/></div>`
         }
         reader.readAsDataURL(file)
@@ -149,7 +148,6 @@ export default {
           formData.append('title', this.title);
           formData.append('contents', editors);
           formData.append('spaceId', this.spaceId);
-          formData.append('imgUrlList', this.imgUrlList);
 
           // 이미지 파일 추가
           const images = this.$refs.editorRef.$el.querySelectorAll("img");
