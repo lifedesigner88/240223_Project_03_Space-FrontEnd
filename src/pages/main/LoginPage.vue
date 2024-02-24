@@ -1,8 +1,8 @@
 <template>
-  <q-list >
+  <q-list class="for_text_size back_box">
     <q-item >
       <q-item-section>
-        <q-input class="search " dense rounded standout placeholder="Email..."   v-model=email />
+        <q-input class="search" dense rounded standout placeholder="Email..."   v-model=email />
       </q-item-section>
     </q-item>
     <q-item >

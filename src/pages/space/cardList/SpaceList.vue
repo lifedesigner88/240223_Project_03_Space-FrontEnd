@@ -10,9 +10,11 @@ export default {
 <template>
   <div class="spacebox">
     <div class="spaceCard sj-center"
-         @click="$emit('createTeamSpace')">
-      <div class="spaceCard__create"> Creat TEAM SPACE</div>
+         @click="$emit('GoToCreate')">
+      <div class="spaceCard__create"> GO TO CREATE</div>
     </div>
+
+
     <div class="spaceCard"
          v-for="(data, i) in mySpaceList" :key="i"
          @click="$emit('getClickedSpaceId',data.spaceId)">
@@ -102,5 +104,9 @@ export default {
   color: rgba(255, 255, 255, 0.47);
   font-size: 20px;
 }
-
+.spaceCard__create {
+  font-size: 25px;
+  color: white;
+  line-height: 1.7;
+}
 </style>

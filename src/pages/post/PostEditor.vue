@@ -1,188 +1,190 @@
+<template>
+  <q-page class="sj-container">
+    <div class="sj-content">
+
+      <q-item-section class="editor__aline">
+        <form
+          @submit.prevent="submitPost"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="off"
+          spellcheck="false"
+          style=" width: 100%"
+        >
+
+          <MySpaceList
+            :mySpaceList="mySpaceList"
+            @getClickedSpaceId="spaceId=$event"
+            style="padding: 40px 50px 50px 50px"
+          />
+
+          <q-card class="q-my-lg q-ma-sm row">
+            <q-input placeholder="제목을 입력하세요." class="col-10" standout v-model=title required></q-input>
+            <q-btn class="col-2 bg-orange text-white submit" type="submit">SUBMIT</q-btn>
+          </q-card>
+
+          <q-editor
+            class="q-ma-sm"
+            ref="editorRef"
+            :definitions="definitions"
+            :toolbar="[['left','center','right','justify'],['bold','italic','underline','strike'],['undo','redo'],['insert_img']]"
+            v-model="editor"
+          />
+          <q-card flat bordered class="q-pa-md q-ma-lg">
+            <p class="Preiview"> Preiview </p>
+            <div v-html="renderedHtml"></div>
+          </q-card>
+        </form>
+
+      </q-item-section>
+    </div>
+  </q-page>
+
+  <AppSidebar></AppSidebar>
+
+</template>
+
 <script>
-import {ref} from 'vue';
+
 import AppSidebar from "components/layout/AppSidebar.vue";
 import {axiosInstance} from "boot/axios";
+import MySpaceList from "pages/space/cardList/MySpaceList.vue";
 
 const BASE_URL = "http://localhost:8080"
 
 export default {
-  components: {AppSidebar},
-
-  setup() {
-    const title = ref('');
-    const contents = ref('');
-    const spaceId = ref(2);
-    const postStatus = ref('OPEN');
-    const thumbnail = ref([])
-    const attachFileList = ref([])
-
-
+  components: {MySpaceList, AppSidebar},
+  data() {
     return {
-      title,
-      contents,
-      spaceId,
-      postStatus,
-      thumbnail,
-      attachFileList,
-    };
+      title: '',
+      editor: '',
+      spaceId: 0,
+      mySpaceList: {},
+      imgUrlList:[],
+      definitions: {
+        insert_img: {
+          tip: '사진첨부',
+          icon: 'photo',
+          handler: this.insertImg
+        }
+      }
+    }
   },
-
-
-
+  computed: {
+    renderedHtml() {
+      return this.editor;
+    }
+  },
   methods: {
-    async writePost() {
-      if (confirm("등록하시겠습니까?")){
+
+    async loadMySpacesByEmail() {
+      try {
+        const response = await axiosInstance.get(`${BASE_URL}/space/my`);
+        this.mySpaceList = response.data.result
+      } catch (e) {
+        console.log(e + "모든 스페이스 가져오기 실패");
+      }
+    },
+
+    insertImg() {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.png, .jgp'
+      let file
+      input.onchange = _ => {
+        const files = Array.from(input.files)
+        file = files[0]
+
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const blob = this.base64ToBlob(reader.result);
+          const url = URL.createObjectURL(blob);
+          this.imgUrlList.push(url);
+          this.editor += `<div><img style="max-width: 100%;" src="${url}" alt=""/></div>`
+        }
+        reader.readAsDataURL(file)
+      }
+      input.click()
+    }
+    ,
+    async fetchBlobFromUrl(url) {
+      try {
+        const response = await fetch(url); // URL에서 데이터를 가져옴
+        return await response.blob(); // Blob 반환
+      } catch (error) {
+        console.error('Error fetching blob from URL:', error);
+        throw error; // 에러를 다시 던져서 호출하는 쪽에서 처리할 수 있도록 함
+      }
+    }
+    ,
+    base64ToBlob(base64Data) {
+      const byteString = atob(base64Data.split(',')[1]);
+      const mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0]; // 이미지의 MIME 유형을 가져옴
+
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([uint8Array], {type: mimeString});
+    }
+    ,
+    async submitPost() {
+      if (!this.title.trim() || !this.editor.trim()) {
+        alert('제목과 내용을 입력하세요.');
+        return;
+      }
+
+      if (this.spaceId === 0) {
+        alert('포스팅할 스페이스를 클릭해주세요');
+        return;
+      }
+
+      if (confirm("작성하시겠습니까?")) {
         try {
-          const registerData = new FormData();
+          const editors = this.editor
+          const formData = new FormData();
+          formData.append('title', this.title);
+          formData.append('contents', editors);
+          formData.append('spaceId', this.spaceId);
+          formData.append('imgUrlList', this.imgUrlList);
 
-          // for (let i = 0; i < this.attachFileList.length; i++) {
-          //   let attachFileList = this.attachFileList[i];
-          //   registerData.append(`attachFileList${i + 1}`, attachFileList);
-          // }
-          //
-          // for (let i = 0; i < this.thumbnail.length; i++) {
-          //   let thumbnailTemp = this.thumbnail[i];
-          //   registerData.append(`thumbnail${i + 1}`, thumbnailTemp);
-          // }
-
-          registerData.append("title", this.title)
-          registerData.append("contents", this.contents)
-          registerData.append("postStatus",this.postStatus)
-          registerData.append("spaceId", this.spaceId)
-          registerData.append("thumbnail", this.thumbnail)
-
-
-          for (let entry of registerData.entries()) {
-            console.log(entry);
+          // 이미지 파일 추가
+          const images = this.$refs.editorRef.$el.querySelectorAll("img");
+          console.log(images);
+          for (const image of images) {
+            const imageUrl = image.getAttribute('src');
+            const blob = await this.fetchBlobFromUrl(imageUrl);
+            // 단일 파일로 추가
+            formData.append('attachFileList', blob, 'image.jpg');
           }
-          await axiosInstance.post(`${BASE_URL}/api/post/create`, registerData, {
+          console.log([...formData.entries()]);
+
+          // Axios를 사용하여 서버로 데이터 전송
+          await axiosInstance.post(`${BASE_URL}/api/post/create`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           });
-        } catch (e) {
-          console.log(e + "게시글 작성시 전송 오류")
-        } // axios
-      } // confirm
-    } // function(writePost)
-  } // method end
-};
-</script>
-
-<template>
-  <q-page class="sj-container">
-
-      <q-uploader
-        v-model="thumbnail"
-        label="Thumbnail"
-        color="amber"
-        accept="image/*"
-        text-color="black"
-        style="max-width: 300px"
-        class="file__thumbnail"
-      />
-
-      <q-uploader
-        v-model="attachFileList"
-        label="Files upload"
-        multiple
-        no-thumbnails
-        style="max-width: 300px"
-        class="file__multiple"
-      />
-
-    <div class="sj-content">
-
-      <q-btn label="Submit" @click="writePost" class="submit__btn"></q-btn>
-      <q-input outlined v-model="title" label="Title" class="title__box"/>
-
-      <q-editor
-        v-model="contents" min-height="60vh"
-        class="content-box"
-        :toolbar="[
-      [
-        {
-          label: $q.lang.editor.align,
-          icon: $q.iconSet.editor.align,
-          fixedLabel: true,
-          options: ['left', 'center', 'right', 'justify']
+          this.title = ''; // 제목 초기화
+          this.editor = ''; // 에디터 초기화
+          formData.delete('attachFileList');
+        } catch (error) {
+          console.error('Error submitting post:', error);
         }
-      ],
-      ['bold', 'italic', 'strike', 'underline'],
+        this.$router.push('/') // 홈 라우팅
+      }
+    }
+  },
 
-      [
-        {
-          label: $q.lang.editor.formatting,
-          icon: $q.iconSet.editor.formatting,
-          list: 'no-icons',
-          options: [
-            'p',
-            'h1',
-            'h2',
-            'h3',
-            'h4',
-            'h5',
-            'h6',
-            'code'
-          ]
-        },
-        {
-          label: $q.lang.editor.fontSize,
-          icon: $q.iconSet.editor.fontSize,
-          fixedLabel: true,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'size-1',
-            'size-2',
-            'size-3',
-            'size-4',
-            'size-5',
-            'size-6',
-            'size-7'
-          ]
-        },
-        {
-          label: $q.lang.editor.defaultFont,
-          icon: $q.iconSet.editor.font,
-          fixedIcon: true,
-          list: 'no-icons',
-          options: [
-            'default_font',
-            'arial',
-            'arial_black',
-            'comic_sans',
-            'courier_new',
-            'impact',
-            'lucida_grande',
-            'times_new_roman',
-            'verdana'
-          ]
-        },
-        'removeFormat'
-      ],
-      ['undo', 'redo'],
-      ['fullscreen','viewsource']
-    ]"
-        :fonts="{
-      arial: 'Arial',
-      arial_black: 'Arial Black',
-      comic_sans: 'Comic Sans MS',
-      courier_new: 'Courier New',
-      impact: 'Impact',
-      lucida_grande: 'Lucida Grande',
-      times_new_roman: 'Times New Roman',
-      verdana: 'Verdana'
-    }"
+  created() {
+    this.loadMySpacesByEmail();
+  },
+};
 
-      />
-
-    </div>
-
-  </q-page>
-  <AppSidebar></AppSidebar>
-</template>
-
+</script>
 
 <style scoped>
 
@@ -190,73 +192,27 @@ export default {
   width: 100vw;
   //background-color: red;
   display: grid;
-  grid-template-columns: 2.7fr 8fr 3fr;
-  grid-template-rows: 2fr 5fr;
-  grid-gap:25px
+  grid-template-columns: 2.7fr 8fr 1.2fr;
 }
 
 .sj-content {
   box-sizing: border-box;
-  padding-top: 4vh;;
   //background-color: gray;
   width: 100%;
   height: 100%;
-  grid-column: 2/3;
-  grid-row: 1/3;
+  grid-column-start: 2;
   display: flex;
   flex-direction: column;
   justify-content: start;
-  align-items: end;
+  align-items: start;
 }
 
-.submit__btn {
-  background-color: orange;
-  color: white;
-  border: none;
-  width: 200px;
-  height: 50px;
+.editor__aline {
+  width: 100%;
+}
+
+.submit {
   font-size: 22px;
-  margin: 10px 0;
-  letter-spacing: 5px;
-}
-
-.title__box {
-  width: 100%;
-  margin: 20px 0;
-  box-sizing: border-box;
-  border: 2px solid orange;
-  border-radius: 4px;
-  font-size: 32px;
-  color: orange;
-  background-color: #ffebba;
-  &:hover {
-    background-color: #ffebba;
-    color: orange;
-    outline: none;
-  }
-  &:focus {
-    background-color: red;
-    color: orange;
-    outline: none;
-  }
-}
-
-
-.content-box {
-  margin: 10px 0;
-  width: 100%;
-  background-color: #ffebba;
-  font-size: 2em;
-}
-
-
-.file__thumbnail {
-  grid-column: 3/4;
-  grid-row: 1/2;
-}
-
-.file__multiple {
-  grid-column: 3/4;
-  grid-row: 2/3;
+  letter-spacing: 4px;
 }
 </style>

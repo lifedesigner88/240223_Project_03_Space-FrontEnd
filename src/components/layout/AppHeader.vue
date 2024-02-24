@@ -1,3 +1,14 @@
+<style>
+.forfont__size {
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  height: 45vh;
+
+}
+</style>
 <template>
   <q-header class="top-navbar row justify-between q-ma-auto">
     <div class="text-white q-mx-lg q-my-auto">
@@ -26,32 +37,47 @@
       <q-btn v-if="this.isLoggedIn" flat rounded class="bg-white text-black " label="Menu" >
         <q-menu>
 
-          <q-list >
-            <q-item clickable @click="this.$router.push('/PostEditor')">
-              <q-item-section >PostEditor</q-item-section>
-            </q-item>
-            <q-item clickable @click="this.$router.push('/MyPage')">
+          <q-list>
+            <q-item
+              clickable
+              @click="this.$router.push('/MyPage')">
               <q-item-section >My Page</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/MySpace')">
+            <q-item
+              clickable
+              @click="this.$router.push('/PostEditor')">
+              <q-item-section >Posting</q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              @click="this.$router.push('/MySpace/MY')">
               <q-item-section>My SPACE</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/TeamSpace')">
+            <q-item
+              clickable
+              @click="this.$router.push('/TeamSpace/TEAM')">
               <q-item-section>Team SPACE</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/GroupSpace')">
+            <q-item
+              clickable
+              @click="this.$router.push('/GroupSpace/GROUP')">
               <q-item-section>Group SPACE</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/Kanban')">
-              <q-item-section>Kanban</q-item-section>
+<!--            <q-item clickable @click="this.$router.push('/Kanban')">-->
+<!--              <q-item-section>Kanban</q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item clickable @click="this.$router.push('/Calendar')">-->
+<!--              <q-item-section>Calendar</q-item-section>-->
+<!--            </q-item>-->
+            <q-item
+              clickable
+              @click="this.$router.push('/Messages')">
+              <q-item-section>Message</q-item-section>
             </q-item>
-            <q-item clickable @click="this.$router.push('/Calendar')">
-              <q-item-section>Calendar</q-item-section>
-            </q-item>
-            <q-item clickable @click="this.$router.push('/Messages')">
-              <q-item-section>MessagesPage</q-item-section>
-            </q-item>
-            <q-item clickable @click="handleLogout">
+            <q-item
+              clickable
+              @click="handleLogout">
               <q-item-section>Log Out</q-item-section>
             </q-item>
 
