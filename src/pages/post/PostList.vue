@@ -1,6 +1,9 @@
 <script>
+import {imgApi} from "src/services/dataService";
+
 export default {
   name: "PostList",
+  methods: {imgApi},
   props: {
     postDatas: Object,
   }
@@ -13,8 +16,9 @@ export default {
          v-for="(data, i) in postDatas" :key="i"
          @click="$emit('PostDtailOpen',data.postId)">
       <div class="postcard__title">{{ data.title }}</div>
-      <img :src="`https://picsum.photos/30${10+data.postId%90}`" alt=""/>
-<!--      <img :src=data.thumbnail alt=""/>-->
+
+      <img v-if="data.thumbnail===null" :src="`https://picsum.photos/30${10+data.postId%90}`" alt=""/>
+      <img v-if="data.thumbnail!=null" :src=imgApi(data.thumbnail) alt=""/>
 <!--<div class="text-white">{{data.thumbnail}}</div>-->
 
     </div>
