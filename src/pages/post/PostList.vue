@@ -17,7 +17,7 @@ export default {
          @click="$emit('PostDtailOpen',data.postId)">
       <div class="postcard__title">{{ data.title }}</div>
 
-      <img v-if="data.thumbnail===null" :src="`https://picsum.photos/30${10+data.postId%90}`" alt=""/>
+      <img v-if="data.thumbnail===null" :src="`https://picsum.photos/3${10+data.postId%90}`" alt=""/>
       <img v-if="data.thumbnail!=null" :src=imgApi(data.thumbnail) alt=""/>
 <!--<div class="text-white">{{data.thumbnail}}</div>-->
 
@@ -71,6 +71,24 @@ export default {
     white-space:nowrap;
     color: white;
   }
+
+/*
+
+{
+  "spaceType": "MY",
+  "postId": 1,
+  "title": "글쓰기",
+  "contents": "<div><img style=\"max-width: 100%;\" src=\"http://localhost:8080/api/file/images/2/image\" alt=\"\"/></div><div><img style=\"max-width: 100%;\" src=\"blob:http://localhost:8081/5502bca6-344a-4af9-afbf-6c8699f04245\" alt=\"\"/></div>",
+  "authorEmail": "lifedesigner88@gmail.com",
+  "authorName": "박세종 (Life Designer)",
+  "authorNickName": "박세종 (Life Designer)",
+  "authorId": 3
+}
+
+*/
+
+
+
 
 
 
