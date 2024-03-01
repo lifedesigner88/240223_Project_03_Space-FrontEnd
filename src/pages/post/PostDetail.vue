@@ -123,7 +123,6 @@ export default {
           <div class="status-item"> ❤️ HEARTS : {{ postDetail.postHearts }}</div>
         </div>
 
-
         <div v-if="postDetail" class="q-pa-xs">
           <h3>{{ postDetail.title }}</h3>
           <q-card flat bordered class="q-pa-md q-ma-lg">

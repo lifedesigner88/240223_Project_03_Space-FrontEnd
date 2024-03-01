@@ -60,7 +60,7 @@ export default {
       editor: '',
       spaceId: 0,
       mySpaceList: {},
-      imgUrlList:[],
+      imgUrlList: [],
       definitions: {
         insert_img: {
           tip: '사진첨부',
@@ -174,7 +174,7 @@ export default {
         } catch (error) {
           console.error('Error submitting post:', error);
         }
-        this.$router.push('/') // 홈 라우팅
+        this.$router.push('/JustPostList') // 홈 게시글 목록 위치로
       }
     }
   },

@@ -121,7 +121,6 @@ export default {
 
     handleLogout(){
       Logout(this.$q)
-
     }
   }
 }

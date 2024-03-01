@@ -69,8 +69,8 @@ const routes = [
     component: ()=> import('pages/post/PostEditor.vue')
   },
   {
-    path: '/PostList',
-    component: ()=> import('pages/post/PostList.vue')
+    path: '/JustPostList',
+    component: ()=> import('pages/post/JustPostList.vue')
   },
   {
     path: '/PostDetail/:postId',
