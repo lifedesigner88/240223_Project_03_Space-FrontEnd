@@ -1,18 +1,11 @@
 <template>
   <q-page>
-    <q-form @submit="onSubmit" class="q-gutter-md">
-      <q-input outlined v-model="name" label="Name"/>
-      <q-input outlined v-model="email" label="Email"/>
-      <!-- 필요한 만큼의 입력 필드를 추가합니다 -->
-      <q-btn label="Submit" type="submit" color="primary"/>
-    </q-form>
-
     <q-item-section class="for_flex">
       <div class="container__in">
         <div class="myPage-header">
           <span>My Info</span>
           <q-card-actions>
-            <q-btn class="btn__style" label="수정" color="green-5"/>
+            <q-btn class="btn__style" label="수정" color="green-5" @click="patchMyInfo"/>
             <q-btn class="btn__style" label="탈퇴" color="red-5" @click="deleteMember"/>
           </q-card-actions>
         </div>
@@ -25,11 +18,17 @@
           </tr>
           <tr>
             <th>Name :</th>
-            <td><q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.name" :model-value="myInfo.name"/></td>
+            <td>
+              <q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.name"
+                       v-model="name"/>
+            </td>
           </tr>
           <tr>
             <th>Nick Name :</th>
-            <td><q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.nickname" :model-value="myInfo.nickname"/></td>
+            <td>
+              <q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.nickname"
+                       v-model="nickname"/>
+            </td>
           </tr>
           <tr>
             <th>Email :</th>
@@ -68,7 +67,6 @@ export default {
       myInfo: {},
       name: "",
       nickname: "",
-      email: "",
     }
   },
 
@@ -77,15 +75,34 @@ export default {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/api/member/mypage`);
         this.myInfo = response.data.result
+        this.name = this.myInfo.name;
+        this.nickname = this.myInfo.nickname;
       } catch (e) {
         console.log(e + "모든 스페이스 가져오기 실패");
       }
     },
+
+    async patchMyInfo() {
+      if (this.myInfo.name === this.name && this.myInfo.nickname === this.nickname)
+        alert("이름과 닉네임의 변경사항이 없습니다.")
+      else if (confirm("입력하신 정보로 수정하시겠습니까?"))
+        try {
+          const response = await axiosInstance.patch(`${BASE_URL}/api/member/patch`, {
+            name: this.name,
+            nickname: this.nickname
+          })
+          console.log(response.data.result);
+          await this.loadMyInfo();
+        } catch (e) {
+          console.log(e + "회원정보 수정 실패")
+        }
+    },
+
+
     async deleteMember() {
       if (confirm("모든 활동이 삭제됩니다 동의하십니까?"))
         try {
-          const response = await axiosInstance.get(`${BASE_URL}/api/member/delete`)
-          console.log(response.data.result)
+          await axiosInstance.delete(`${BASE_URL}/api/member/delete`)
           Logout(this.$q)
         } catch (e) {
           console.log(e + "회원 정보 삭제 실패")
@@ -125,7 +142,7 @@ export default {
   display: flex;
   justify-content: space-around;
   font-size: 3vw;
-  margin-top: 10vw;
+  margin-top: 50vh;
 }
 
 .table {
@@ -139,10 +156,12 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  //background-color: gray;
+
 }
 
 th {
-  padding: 10px;
+  padding: 15px;
 }
 
 td {
