@@ -88,6 +88,7 @@ export default {
     </q-card-section>
 
    <PostList
+     id="postSection"
      class="postList__css"
      :postDatas="postDatas"
      @PostDtailOpen = "goToPostDetail($event)"

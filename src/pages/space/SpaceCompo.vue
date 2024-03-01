@@ -28,7 +28,7 @@ export default {
       AllSpaceList: {},
       mySpaceList: {},
       getMembersBySpaceId: [],
-      getPostsBySpaceId: Object,
+      getPostsBySpaceId: [],
       getSpacesBySpaceId: Object,
       clickedSpaceId: 1,
       viewMembersTable: false,
@@ -67,15 +67,12 @@ export default {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/space/${id}/posts`);
         this.getPostsBySpaceId = response.data.result
-        console.log(this.mySpaceList)
-        console.log("end")
       } catch (e) {
         console.log(e);
       }
     },
 
     goToPostDetail(event){
-      console.log(event)
       this.$router.push( `/PostDetail/${event}`  );
     },
 
@@ -84,7 +81,6 @@ export default {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/space/${clickedSpaceId}/schedules`);
         this.getSpacesBySpaceId = response.data.result
-        console.log(this.mySpaceList)
       } catch (e) {
         console.log(e);
       }
