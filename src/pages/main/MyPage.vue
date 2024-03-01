@@ -1,6 +1,4 @@
 <template>
-
-
   <q-page>
     <q-form @submit="onSubmit" class="q-gutter-md">
       <q-input outlined v-model="name" label="Name"/>
@@ -21,15 +19,17 @@
         <table class="table">
           <tr>
             <th>Profile :</th>
-            <td><img class="profile__box" :src="myInfo.profile" alt=""/></td>
+            <td><img class="profile__box" :src="myInfo.profile" alt=""/>
+              <q-btn class="btn__style profile__btn" label="사진수정" color="blue-5" @click="deleteMember"/>
+            </td>
           </tr>
           <tr>
             <th>Name :</th>
-            <td>{{ myInfo.name }}</td>
+            <td><q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.name" :model-value="myInfo.name"/></td>
           </tr>
           <tr>
             <th>Nick Name :</th>
-            <td>{{ myInfo.nickname }}</td>
+            <td><q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.nickname" :model-value="myInfo.nickname"/></td>
           </tr>
           <tr>
             <th>Email :</th>
@@ -66,6 +66,9 @@ export default {
   data() {
     return {
       myInfo: {},
+      name: "",
+      nickname: "",
+      email: "",
     }
   },
 
@@ -150,5 +153,17 @@ td {
   border-radius: 10px;
   width: 288px;
   height: 288px;
+}
+
+.input__box {
+  font-weight: bold;
+  font-size: 28px;
+  width: 100%;
+  color: #98dad1;
+}
+
+.profile__btn {
+  margin-left: 20px;
+  margin-bottom: 40px;
 }
 </style>
