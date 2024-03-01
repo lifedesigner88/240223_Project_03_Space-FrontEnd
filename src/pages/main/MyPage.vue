@@ -4,7 +4,7 @@
       <div class="container__in">
         <div class="myPage-header">
           <span>My Info</span>
-          <q-card-actions>
+          <q-card-actions class="botton__box">
             <q-btn class="btn__style" label="수정" color="green-5" @click="patchMyInfo"/>
             <q-btn class="btn__style" label="탈퇴" color="red-5" @click="deleteMember"/>
           </q-card-actions>
@@ -12,8 +12,12 @@
         <table class="table">
           <tr>
             <th>Profile :</th>
-            <td><img class="profile__box" :src="myInfo.profile" alt=""/>
-              <q-btn class="btn__style profile__btn" label="사진수정" color="blue-5" @click="deleteMember"/>
+            <td>
+              <img v-if="myInfo.profile && myInfo.profile.startsWith('http')" class="profile__box" :src="myInfo.profile"
+                   alt=""/>
+              <img v-else class="profile__box" :src="getProfileImage(myInfo.email)" alt=""/>
+              <input type="file" ref="fileInput" @change="updateProfile" style="display: none"/>
+              <q-btn class="btn__style profile__btn" label="사진수정" color="blue-5" @click="promptFileUpload"/>
             </td>
           </tr>
           <tr>
@@ -55,7 +59,6 @@ import {axiosInstance} from "boot/axios";
 import {Logout} from "src/services/authService";
 
 const BASE_URL = "http://localhost:8080"
-
 export default {
   components: {AppSidebar},
   setup() {
@@ -67,10 +70,34 @@ export default {
       myInfo: {},
       name: "",
       nickname: "",
+      profile: null,
     }
   },
 
   methods: {
+
+    getProfileImage(email){
+      return `${BASE_URL}/api/member/profile/image/${email}`
+    },
+
+    promptFileUpload() {
+      this.$refs.fileInput.click();
+    },
+
+    async updateProfile(event) {
+      this.profile = event.target.files[0];
+      const formData = new FormData();
+      formData.append('profile', this.profile)
+
+      if (confirm("등록하신 사진으로 즉시 프로필이 변경됩니다. 변경하시겠습니까?"))
+      try {
+        await axiosInstance.put(`${BASE_URL}/api/member/profile`, formData)
+        window.location.reload();
+      } catch (e) {
+        console.log(e + "프로필 수정 실패");
+      }
+    },
+
     async loadMyInfo() {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/api/member/mypage`);
@@ -91,7 +118,7 @@ export default {
             name: this.name,
             nickname: this.nickname
           })
-          console.log(response.data.result);
+          alert("수정완료")
           await this.loadMyInfo();
         } catch (e) {
           console.log(e + "회원정보 수정 실패")
@@ -111,7 +138,7 @@ export default {
   },
   created() {
     this.loadMyInfo();
-  }
+  },
 }
 </script>
 
@@ -121,7 +148,6 @@ export default {
   font-size: 20px;
   padding: 5px 20px 0 20px;
   font-weight: bold;
-
 }
 
 .container__in {
@@ -141,8 +167,9 @@ export default {
   //background-color: gray;
   display: flex;
   justify-content: space-around;
-  font-size: 3vw;
+  font-size: 4vw;
   margin-top: 50vh;
+  margin-bottom: 20px;
 }
 
 .table {
@@ -184,5 +211,11 @@ td {
 .profile__btn {
   margin-left: 20px;
   margin-bottom: 40px;
+}
+
+.botton__box {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

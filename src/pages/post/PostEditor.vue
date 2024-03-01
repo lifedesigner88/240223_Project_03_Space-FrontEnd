@@ -153,14 +153,14 @@ export default {
 
           // 이미지 파일 추가
           const images = this.$refs.editorRef.$el.querySelectorAll("img");
-          console.log(images);
+          // console.log(images);
           for (const image of images) {
             const imageUrl = image.getAttribute('src');
             const blob = await this.fetchBlobFromUrl(imageUrl);
             // 단일 파일로 추가
             formData.append('attachFileList', blob, 'image.jpg');
           }
-          console.log([...formData.entries()]);
+          // console.log([...formData.entries()]);
 
           // Axios를 사용하여 서버로 데이터 전송
           await axiosInstance.post(`${BASE_URL}/api/post/create`, formData, {
@@ -174,7 +174,7 @@ export default {
         } catch (error) {
           console.error('Error submitting post:', error);
         }
-        this.$router.push('/JustPostList') // 홈 게시글 목록 위치로
+        this.$router.push('/JustPostList') // 게시글 목록 위치로
       }
     }
   },
