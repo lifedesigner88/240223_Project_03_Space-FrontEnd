@@ -177,8 +177,6 @@ export default {
   font-weight: bold;
 }
 .button--size{
-
   font-size: 50px;
-
 }
 </style>
