@@ -1,11 +1,43 @@
 <template>
   <q-page>
     <q-item-section class="for_flex">
+      <q-dialog v-model="dialog">
+        <q-card class="card-size">
+          <q-card-section class="passInput__box">
+            <q-input
+              dark
+              v-model="password"
+              rounded
+              type="password"
+              label="비밀번호"
+              label-color="blue"
+              class="input__size"
+              @keyup="validatePassword"
+            />
+            <q-input
+              dark
+              v-model="passwordCheck"
+              rounded
+              type="password"
+              label="비밀번호 확인"
+              label-color="blue"
+              class="input__size"
+              @keyup="validatePasswordCheck"
+            />
+            <div class="error_message">{{ errorMessage }}</div>
+          </q-card-section>
+          <q-card-actions>
+            <q-btn flat class="button--size" label="Cancel" color="primary" v-close-popup/>
+            <q-btn flat class="button--size" label="Submit" color="primary" @click="updatePassword"/>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
       <div class="container__in">
         <div class="myPage-header">
           <span>My Info</span>
-          <q-card-actions class="botton__box">
-            <q-btn class="btn__style" label="수정" color="green-5" @click="patchMyInfo"/>
+
+          <q-card-actions>
             <q-btn class="btn__style" label="탈퇴" color="red-5" @click="deleteMember"/>
           </q-card-actions>
         </div>
@@ -33,6 +65,10 @@
               <q-input class="input__box" bg-color="orange-3" outlined label-color="red-4" :label="myInfo.nickname"
                        v-model="nickname"/>
             </td>
+            <td>
+              <q-btn class="btn__style"  style="margin-left: 15px" label="정보수정" color="green-5" @click="patchMyInfo"/>
+            </td>
+
           </tr>
           <tr>
             <th>Email :</th>
@@ -44,7 +80,12 @@
           </tr>
           <tr>
             <th>loginType :</th>
-            <td>{{ myInfo.loginType }}</td>
+            <td>
+              {{ myInfo.loginType }}
+            </td>
+              <td>
+                <q-btn class="btn__style pass__box" label="비밀번호 변경" color="orange" @click="dialog=true"/>
+              </td>
           </tr>
         </table>
       </div>
@@ -57,6 +98,8 @@
 import AppSidebar from "components/layout/AppSidebar.vue";
 import {axiosInstance} from "boot/axios";
 import {Logout} from "src/services/authService";
+import {isValidPassword} from "src/services/utilityService";
+import {triggerNegative} from "src/utils/notification";
 
 const BASE_URL = "http://localhost:8080"
 export default {
@@ -71,17 +114,37 @@ export default {
       name: "",
       nickname: "",
       profile: null,
+
+      dialog: false,
+      password: '',
+      passwordCheck: '',
+      errorMessage: '',
+
     }
   },
 
   methods: {
-
     getProfileImage(email){
       return `${BASE_URL}/api/member/profile/image/${email}`
     },
 
     promptFileUpload() {
       this.$refs.fileInput.click();
+    },
+    validatePassword() {
+      if (!isValidPassword(this.password)) {
+        this.errorMessage = '비밀번호는 최소 8자 이상, 15자 이하의 숫자를 입력하세요. 알파벳 대소문자(a~z, A~Z), 숫자(0~9)가 혼합되어야 합니다.';
+      } else {
+        this.errorMessage = '';
+      }
+    },
+
+    validatePasswordCheck() {
+      if (this.password !== this.passwordCheck) {
+        this.errorMessage = '비밀번호가 서로 일치하지 않습니다.';
+      } else {
+        this.errorMessage = '서로 일치합니다.';
+      }
     },
 
     async updateProfile(event) {
@@ -114,7 +177,8 @@ export default {
         alert("이름과 닉네임의 변경사항이 없습니다.")
       else if (confirm("입력하신 정보로 수정하시겠습니까?"))
         try {
-          const response = await axiosInstance.patch(`${BASE_URL}/api/member/patch`, {
+
+          await axiosInstance.patch(`${BASE_URL}/api/member/patch`, {
             name: this.name,
             nickname: this.nickname
           })
@@ -134,6 +198,31 @@ export default {
         } catch (e) {
           console.log(e + "회원 정보 삭제 실패")
         }
+    },
+
+    async updatePassword() {
+      if (!isValidPassword(this.password)) {
+        this.errorMessage = '비밀번호 형식이 잘못 되었습니다.';
+        triggerNegative(this.errorMessage, this.$q);
+        return;
+      }
+
+      if (this.password !== this.passwordCheck) {
+        this.errorMessage = '비밀번호가 서로 다릅니다.';
+        triggerNegative(this.errorMessage, this.$q);
+        return;
+      }
+
+      if (confirm("비밀번호가 즉시 변경됩니다")) {
+       try {
+         await axiosInstance.patch(`${BASE_URL}/api/member/password`, {
+           password: this.password,
+         })
+       } catch (e) {
+         console.log(e + "비밀번호 변경 실패")
+       }
+      }
+      this.dialog=false
     },
   },
   created() {
@@ -164,9 +253,8 @@ export default {
 
 
 .myPage-header {
-  //background-color: gray;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   font-size: 4vw;
   margin-top: 50vh;
   margin-bottom: 20px;
@@ -213,9 +301,33 @@ td {
   margin-bottom: 40px;
 }
 
-.botton__box {
-  width: 200px;
+.card-size {
+  width: 50vw;
+  background-color: #f1cc85;
+  padding: 2vw;
+  border-radius: 20px;
+
+}
+.input__size {
+  font-size: 35px;
+  font-weight: bold;
+}
+.button--size{
+  font-size: 50px;
+}
+
+.error_message {
+  height:8vh;
+  font-size:18px;
+  font-weight: normal;
+  color: #4d4de3;
+  padding: 14px;
+}
+
+.passInput__box {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
+  height: 30vh;
 }
 </style>
