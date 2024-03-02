@@ -36,6 +36,7 @@
       <div class="container__in">
         <div class="myPage-header">
           <span>My Info</span>
+
           <q-card-actions>
             <q-btn class="btn__style" label="탈퇴" color="red-5" @click="deleteMember"/>
           </q-card-actions>
@@ -67,6 +68,7 @@
             <td>
               <q-btn class="btn__style"  style="margin-left: 15px" label="정보수정" color="green-5" @click="patchMyInfo"/>
             </td>
+
           </tr>
           <tr>
             <th>Email :</th>
@@ -112,10 +114,12 @@ export default {
       name: "",
       nickname: "",
       profile: null,
+
       dialog: false,
       password: '',
       passwordCheck: '',
       errorMessage: '',
+
     }
   },
 
@@ -127,7 +131,6 @@ export default {
     promptFileUpload() {
       this.$refs.fileInput.click();
     },
-
     validatePassword() {
       if (!isValidPassword(this.password)) {
         this.errorMessage = '비밀번호는 최소 8자 이상, 15자 이하의 숫자를 입력하세요. 알파벳 대소문자(a~z, A~Z), 숫자(0~9)가 혼합되어야 합니다.';
@@ -174,6 +177,7 @@ export default {
         alert("이름과 닉네임의 변경사항이 없습니다.")
       else if (confirm("입력하신 정보로 수정하시겠습니까?"))
         try {
+
           await axiosInstance.patch(`${BASE_URL}/api/member/patch`, {
             name: this.name,
             nickname: this.nickname
