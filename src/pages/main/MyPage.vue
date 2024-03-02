@@ -218,7 +218,7 @@ export default {
          console.log(e + "비밀번호 변경 실패")
        }
       }
-      this.dialog
+      this.dialog=false
     },
   },
   created() {
